@@ -3,6 +3,8 @@ package br.com.hommei.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "CATEGORIA")
@@ -15,4 +17,7 @@ public class Categoria {
 
     @Column(name = "NOME_CATEGORIA")
     private String nomeCategoria;
+
+    @ManyToMany
+    private List<Prestador> prestadores;
 }

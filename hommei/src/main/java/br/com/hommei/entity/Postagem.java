@@ -30,8 +30,5 @@ public class Postagem {
     @Column(name = "DT_POSTAGEM")
     private Date dtPostagem;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_PRESTADOR")
-    private Prestador id;
 
 }

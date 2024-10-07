@@ -22,7 +22,5 @@ public class Contrato {
     @JoinColumn(name = "ID_PGTO", nullable = false)
     private Pagamento pagamento;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_PRESTADOR", nullable = false)
-    private Prestador prestador;
+
 }

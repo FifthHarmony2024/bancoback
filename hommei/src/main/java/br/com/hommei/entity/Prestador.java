@@ -1,20 +1,16 @@
 package br.com.hommei.entity;
 
+import br.com.hommei.enuns.TipoPrestador;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CNPJ;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "PRESTADOR")
-public class Prestador {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_PRESTADOR")
-    private Integer idPrestador;
+public class Prestador extends Usuario {
 
     @Column(name = "NOME_COMERCIAL")
     private String nomeComercial;
@@ -23,24 +19,19 @@ public class Prestador {
     @Column(name = "CNPJ")
     private String cnpj;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_USUARIO")
-    private Usuario usuario;
-
-    @ManyToOne
-    @JoinColumn(name = "ID_CATEGORIA")
-    private Categoria categoria;
+    @ManyToMany
+    @JoinTable(
+            name = "PRESTADOR_CATEGORIA",
+            joinColumns = @JoinColumn(name = "ID_USUARIO"),
+            inverseJoinColumns = @JoinColumn(name = "ID_CATEGORIA")
+    )
+    private List<Categoria> categorias;
 
     @ManyToOne
     @JoinColumn(name = "ID_SERVICO")
     private Servico servico;
 
-    @ManyToMany
-    @JoinTable(
-            name = "PRESTADOR_SERV",
-            joinColumns = @JoinColumn(name = "ID_PRESTADOR"),
-            inverseJoinColumns = @JoinColumn(name = "ID_SERV")
-    )
-    private Set<Servico> servicos;
-
+    @Column(name = "TIPO_PRESTADOR")
+    @Enumerated(EnumType.ORDINAL)
+    private TipoPrestador tipoPrestador;
 }

@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "USUARIO")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario {
 
     @Id
@@ -77,5 +78,6 @@ public class Usuario {
     @NotBlank
     @Transient
     private String confSenha;
+
 
 }

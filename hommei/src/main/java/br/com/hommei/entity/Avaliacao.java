@@ -32,9 +32,5 @@ public class Avaliacao {
     @JoinColumn(name = "ID_USUARIO")
     private Usuario id;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_PRESTADOR")
-    private Prestador idPrestador;
-
 
 }

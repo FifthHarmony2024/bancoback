@@ -1,0 +1,122 @@
+usuários testes: cadastro de usuários com atributos deles 
+
+Cadastrar prestador : http://localhost:8080/usuarios/prestador
+Cadastrar Cliente:  http://localhost:8080/usuarios/cliente
+Listar Usuários(GET): http://localhost:8080/usuarios
+
+Usuário cliente:
+{
+	"nome":"Mariana",
+	"sobrenome":"Silva Rodrigues",
+	"senha":"Mari12345",
+	"confSenha":"Mari12345",
+	"email":"marianasilva@gmail.com",
+	"telefone":"11967544329",
+	"dataNascimento":"14/02/2003",
+	"cpf":"80023456332",
+	"endereco":"Rua Novo Horizonte",
+	"numResidencial":"134",
+	"bairro":"Jardim Pernambuco",
+	"complementoResi":"",
+	"cep":"09844567",
+    	"sexoOpcao":"FEMININO",
+	"nresidencial":"123"
+}
+
+Usuário Prestador:
+{
+	"nome":"Renato",
+	"sobrenome":"Bruno Magalhães",
+	"senha":"bruninho12345",
+    "confSenha":"bruninho12345",
+	"email":"renatopedreiro@gmail.com",
+	"telefone":"11964554329",
+	"sexoOpcao":"Feminino",
+    "dataNascimento":"15/05/2006",
+	"login":"ren",
+	"cpf":"64711345841",
+	"endereco":"Rua Paraiso",
+	"numResidencial":"174",
+	"bairro":"Jardim Pereira",
+	"complementoResi":"",
+	"cep":"09834567",
+	"categoriaServico":"Pedreiro",
+	"nomeComercial":"Renato Quebra Tudo",
+	"tipoPrestador":"AUTONOMO"
+}
+
+ESTA RODANDO SO ASSIM, ELE ESPERA O INSERT DA CATEGORIA NO SQL
+{
+    "nome": "Renato",
+    "sobrenome": "Bruno Magalhães",
+    "senha": "bruninho12345",
+    "email": "renatopedreiro@gmail.com",
+    "telefone": "11964554329",
+    "cpf": "55403455094",
+    "endereco": "Rua Paraiso",
+    "bairro": "Jardim Pereira",
+    "complementoResi": "",
+    "cep": "09834567",
+    "dataNascimento": "15/05/2006",
+    "sexoOpcao": "MASCULINO",
+    "confSenha": "bruninho12345",
+    "nomeComercial": "Renato Quebra Tudo",
+    "tipoPrestador": "AUTONOMO",
+    "nresidencial": "123"
+}
+ 
+RESULTADO:
+{
+    "idUsuario": 2,
+    "nome": "Renato",
+    "sobrenome": "Bruno Magalhães",
+    "senha": "bruninho12345",
+    "email": "renatopedreiro@gmail.com",
+    "telefone": "11964554329",
+    "cpf": "55403455094",
+    "endereco": "Rua Paraiso",
+    "bairro": "Jardim Pereira",
+    "complementoResi": "",
+    "cep": "09834567",
+    "cidade": null,
+    "estado": null,
+    "dataNascimento": "15/05/2006",
+    "sexoOpcao": "MASCULINO",
+    "confSenha": "bruninho12345",
+    "nomeComercial": "Renato Quebra Tudo",
+    "cnpj": null,
+    "categorias": null,
+    "servico": null,
+    "tipoPrestador": "AUTONOMO",
+    "nresidencial": 123
+}
+
+
+Adicionar Postagens: http://localhost:8080/postagens/{id do Prestador}
+ex: http://localhost:8080/postagens/1
+
+
+Postagens Exemplo:
+{
+
+    "url": "https://meusite.com/imagem.jpg",
+    "descricaoPost": "Imagem de Servicos",
+    "resolucao": "1920x1080",
+    "tamanhoArquivo": 2.5,
+    "tipoArquivo": "image/jpeg",
+    "dtPostagem": "2024-09-22"
+
+}
+
+Deletar: DELETE : http://localhost:8080/postagens/{id da Postagem}
+
+Ver os dias de serviço marcados na agenda: http://localhost:8080/agendas/prestador/1
+Marcar serviços na agenda: http://localhost:8080/agendas/marcar:
+
+{
+  "diaServico": "2024-09-25",
+  "hrDisponivel": "08:00",
+  "hrIndisponivel": "12:00",
+  "statusDia": "OCUPADO/LIVRE/FOLGA",
+  "idUsuario": 1
+}
