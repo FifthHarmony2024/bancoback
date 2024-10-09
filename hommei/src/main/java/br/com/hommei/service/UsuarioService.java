@@ -1,35 +1,53 @@
 package br.com.hommei.service;
 
+import br.com.hommei.config.ModelMapperConfig;
 import br.com.hommei.dto.PrestadorResponseDTO;
+import br.com.hommei.dto.UsuarioInsercaoDTO;
 import br.com.hommei.dto.UsuarioResponseDTO;
+import br.com.hommei.dto.PrestadorInsercaoDTO;
 import br.com.hommei.entity.Prestador;
 import br.com.hommei.entity.Usuario;
 import br.com.hommei.enuns.TipoPrestador;
+import br.com.hommei.mapper.ModelMapperCustom;
 import br.com.hommei.repository.UsuarioRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 public class UsuarioService {
 
     @Autowired
     private UsuarioRepository repository;
 
-    private ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private ModelMapperCustom modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
-    public ResponseEntity<Usuario> cadastrarCliente(Usuario usuario) {
+    public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(UsuarioInsercaoDTO usuarioDTO) {
+        Usuario usuario = modelMapper.map(usuarioDTO, Usuario.class);
+
+        String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());
+        log.info("Senha Cifrada => {}", senhaCifrada);
+
+        usuario.setSenha(senhaCifrada);
         Usuario clienteSalvo = repository.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(clienteSalvo);
+
+        UsuarioResponseDTO usuarioResponse = modelMapper.map(clienteSalvo, UsuarioResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponse);
     }
 
-    public ResponseEntity<Prestador> cadastrarPrestador(Prestador prestador) {
+    public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
+        Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
+
         if (prestador.getTipoPrestador() == TipoPrestador.AUTONOMO) {
             if (prestador.getCpf() == null || prestador.getCpf().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -44,19 +62,15 @@ public class UsuarioService {
             prestador.setCpf(null);
         }
 
-        Prestador prestadorSalvo = repository.save(prestador);
-        return ResponseEntity.status(HttpStatus.CREATED).body(prestadorSalvo);
-    }
-    public List<UsuarioResponseDTO> listar() {
-        var usuarios = repository.findAll();
-        return usuarios.stream().map(usuario -> {
-            if (usuario instanceof Prestador) {
-                return modelMapper.map(usuario, PrestadorResponseDTO.class);
-            } else {
-                return modelMapper.map(usuario, UsuarioResponseDTO.class);
-            }
-        }).collect(Collectors.toList());
-    }
+        String senhaCifrada = passwordEncoder.encode(prestadorDTO.getSenha());
+        log.info("Senha Cifrada para Prestador => {}", senhaCifrada);
 
+        prestador.setSenha(senhaCifrada);
+
+        Prestador prestadorSalvo = repository.save(prestador);
+
+        PrestadorResponseDTO prestadorResponse = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(prestadorResponse);
+    }
 
 }

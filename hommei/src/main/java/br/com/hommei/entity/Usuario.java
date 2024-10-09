@@ -1,17 +1,24 @@
 package br.com.hommei.entity;
 
+import br.com.hommei.enuns.RoleEnum;
 import br.com.hommei.enuns.SexoOpcao;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "USUARIO")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario {
@@ -25,7 +32,6 @@ public class Usuario {
     @Column(name = "NOME")
     private String nome;
 
-    @NotBlank
     @Column(name = "SOBRENOME")
     private String sobrenome;
 
@@ -34,8 +40,8 @@ public class Usuario {
     private String senha;
 
     @Email
-    @Column(name = "EMAIL")
-    private String email;
+    @Column(name = "EMAIL_LOGIN")
+    private String emailLogin;
 
     @Column(name = "TELEFONE")
     private String telefone;
@@ -44,14 +50,12 @@ public class Usuario {
     @Column(name = "CPF")
     private String cpf;
 
-    @NotBlank
     @Column(name = "ENDERECO")
     private String endereco;
 
     @Column(name = "N_RESIDENCIAL")
     private Integer nResidencial;
 
-    @NotBlank
     @Column(name = "BAIRRO")
     private String bairro;
 
@@ -67,6 +71,10 @@ public class Usuario {
     @Column(name = "ESTADO")
     private String estado;
 
+    @Column(name = "STATUS_ROLE")
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
+
     @Column(name = "DATA_NASCIMENTO")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
@@ -75,7 +83,6 @@ public class Usuario {
     @Enumerated(EnumType.ORDINAL)
     private SexoOpcao sexoOpcao;
 
-    @NotBlank
     @Transient
     private String confSenha;
 

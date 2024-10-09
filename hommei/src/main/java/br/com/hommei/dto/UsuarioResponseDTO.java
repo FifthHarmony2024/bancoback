@@ -8,7 +8,7 @@ public class UsuarioResponseDTO {
 
     private String nome;
     private String sobrenome;
-    private String email;
+    private String emailLogin;
     private String telefone;
     private String estado;
     private String cidade;
