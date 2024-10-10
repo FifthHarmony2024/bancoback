@@ -40,6 +40,7 @@ public class UsuarioService {
 
         usuario.setSenha(senhaCifrada);
         Usuario clienteSalvo = repository.save(usuario);
+        log.info("Cliente salvo: {}", clienteSalvo);
 
         UsuarioResponseDTO usuarioResponse = modelMapper.map(clienteSalvo, UsuarioResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponse);

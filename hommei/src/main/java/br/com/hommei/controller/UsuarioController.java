@@ -20,17 +20,13 @@ public class UsuarioController {
     @Autowired
     private UsuarioService service;
 
-    // Endpoint para cadastro de cliente
     @PostMapping("/cliente")
     public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(@RequestBody @Valid UsuarioInsercaoDTO usuarioDTO) {
-        // Chama o serviço que cuida da lógica de cadastro do cliente
         return service.cadastrarCliente(usuarioDTO);
     }
 
-    // Endpoint para cadastro de prestador
     @PostMapping("/prestador")
     public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(@RequestBody @Valid PrestadorInsercaoDTO prestadorDTO) {
-        // Chama o serviço que cuida da lógica de cadastro do prestador
         return service.cadastrarPrestador(prestadorDTO);
     }
 

@@ -12,4 +12,6 @@ public class UsuarioResponseDTO {
     private String telefone;
     private String estado;
     private String cidade;
+    private Integer nResidencial;
+
 }
