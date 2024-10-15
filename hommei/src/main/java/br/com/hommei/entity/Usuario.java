@@ -53,8 +53,8 @@ public class Usuario {
     @Column(name = "ENDERECO")
     private String endereco;
 
-    @Column(name = "N_RESIDENCIAL")
-    private Integer nResidencial;
+    @Column(name = "N_RESIDENCIAL", nullable = false)
+    private Integer numResidencial;
 
     @Column(name = "BAIRRO")
     private String bairro;
@@ -75,15 +75,16 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
-    @Column(name = "DATA_NASCIMENTO")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate dataNascimento;
+    @Column(name = "DATA_DE_NASCIMENTO")
+    private LocalDate dataDeNascimento;
+
 
     @Column(name = "SEXO")
     @Enumerated(EnumType.ORDINAL)
     private SexoOpcao sexoOpcao;
 
-    @Transient
+    @Column(name = "CONF_SENHA")
     private String confSenha;
 
 

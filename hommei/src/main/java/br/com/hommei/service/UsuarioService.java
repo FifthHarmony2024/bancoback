@@ -33,7 +33,11 @@ public class UsuarioService {
 
 
     public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(UsuarioInsercaoDTO usuarioDTO) {
+        log.info("Dados do usuário recebidos: {}", usuarioDTO);
+
         Usuario usuario = modelMapper.map(usuarioDTO, Usuario.class);
+        log.info("Dados do usuário após mapeamento: {}", usuario); // Log para verificação
+
 
         String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());
         log.info("Senha Cifrada => {}", senhaCifrada);

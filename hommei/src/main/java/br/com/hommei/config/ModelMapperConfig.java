@@ -13,6 +13,7 @@ public class ModelMapperConfig {
     public ModelMapperCustom modelMapper() {
         var mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
         return new ModelMapperCustom(mapper);
     }
 

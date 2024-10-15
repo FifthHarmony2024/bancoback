@@ -21,7 +21,7 @@ public class UsuarioController {
     private UsuarioService service;
 
     @PostMapping("/cliente")
-    public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(@RequestBody @Valid UsuarioInsercaoDTO usuarioDTO) {
+    public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(@Valid @RequestBody UsuarioInsercaoDTO usuarioDTO) {
         return service.cadastrarCliente(usuarioDTO);
     }
 
