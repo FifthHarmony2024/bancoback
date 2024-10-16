@@ -30,6 +30,5 @@ public class UsuarioInsercaoDTO {
     private LocalDate dataDeNascimento;
 
     private SexoOpcao sexoOpcao;
-    private RoleEnum role;
     private String confSenha;
 }

@@ -46,6 +46,8 @@ public class SecurityConfiguration {
                    request.requestMatchers("/usuarios").permitAll();
                    request.requestMatchers("/usuarios/cliente").permitAll();
                    request.requestMatchers("/usuarios/prestador").permitAll();
+                   request.requestMatchers("/categorias").permitAll();
+
 
                request.anyRequest().authenticated();
                })

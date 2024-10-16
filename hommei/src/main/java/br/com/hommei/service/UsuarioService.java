@@ -36,7 +36,7 @@ public class UsuarioService {
         log.info("Dados do usuário recebidos: {}", usuarioDTO);
 
         Usuario usuario = modelMapper.map(usuarioDTO, Usuario.class);
-        log.info("Dados do usuário após mapeamento: {}", usuario); // Log para verificação
+        log.info("Dados do usuário após mapeamento: {}", usuario);
 
 
         String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());

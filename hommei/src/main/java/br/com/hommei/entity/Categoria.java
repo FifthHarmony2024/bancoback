@@ -18,6 +18,6 @@ public class Categoria {
     @Column(name = "NOME_CATEGORIA")
     private String nomeCategoria;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "categorias")
     private List<Prestador> prestadores;
 }
