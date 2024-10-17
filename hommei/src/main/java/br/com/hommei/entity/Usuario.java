@@ -75,7 +75,6 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name = "DATA_DE_NASCIMENTO")
     private LocalDate dataDeNascimento;
 

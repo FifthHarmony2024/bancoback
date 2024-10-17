@@ -4,10 +4,8 @@ import br.com.hommei.enuns.TipoPrestador;
 import lombok.Data;
 
 @Data
-public class PrestadorResponseDTO {
-    private String nome;
-    private String emailLogin;
-    private String cpf;
+public class PrestadorResponseDTO extends UsuarioResponseDTO{
     private String cnpj;
     private TipoPrestador tipoPrestador;
+    private String mensagemErro;
 }

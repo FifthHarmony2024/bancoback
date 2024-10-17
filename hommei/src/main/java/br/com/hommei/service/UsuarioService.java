@@ -48,34 +48,34 @@ public class UsuarioService {
 
         UsuarioResponseDTO usuarioResponse = modelMapper.map(clienteSalvo, UsuarioResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponse);
-    }
-
-    public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
+    }public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
         Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
+        PrestadorResponseDTO response = new PrestadorResponseDTO(); // Instanciando o DTO
 
         if (prestador.getTipoPrestador() == TipoPrestador.AUTONOMO) {
             if (prestador.getCpf() == null || prestador.getCpf().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                response.setMensagemErro("CPF é obrigatório para autônomos.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
             prestador.setCnpj(null);
         }
 
         if (prestador.getTipoPrestador() == TipoPrestador.MICROEMPREENDEDOR) {
             if (prestador.getCnpj() == null || prestador.getCnpj().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                response.setMensagemErro("CNPJ é obrigatório para microempreendedores.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
             prestador.setCpf(null);
         }
 
         String senhaCifrada = passwordEncoder.encode(prestadorDTO.getSenha());
         log.info("Senha Cifrada para Prestador => {}", senhaCifrada);
-
         prestador.setSenha(senhaCifrada);
 
         Prestador prestadorSalvo = repository.save(prestador);
-
-        PrestadorResponseDTO prestadorResponse = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(prestadorResponse);
+        response = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
 }
