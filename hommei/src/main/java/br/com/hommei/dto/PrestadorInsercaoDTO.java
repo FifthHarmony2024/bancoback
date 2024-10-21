@@ -10,6 +10,6 @@ public class PrestadorInsercaoDTO extends UsuarioInsercaoDTO{
     private String nomeComercial;
     private String cnpj;
     private TipoPrestador tipoPrestador;
-    private List<Integer> categoriasIds;
-    private Integer servicoId;
+    private List<Integer> idCategoria;
+    private Integer idServico;
 }

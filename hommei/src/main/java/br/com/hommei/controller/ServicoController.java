@@ -17,9 +17,9 @@ public class ServicoController {
     private ServicoService servicoService;
 
     @GetMapping("/categoria/{idCategoria}")
-    public List<Servico> getServicosPorCategoria(@PathVariable Integer idCategoria) {
+    public List<Servico> getServicosPorCategoria(@PathVariable Integer idCategorias) {
         Categoria categoria = new Categoria();
-        categoria.setIdCategoria(idCategoria);
+        categoria.setIdCategorias(idCategorias);
         return servicoService.buscarServicosPorCategoria(categoria);
     }
 }

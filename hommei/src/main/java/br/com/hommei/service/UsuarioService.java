@@ -48,9 +48,11 @@ public class UsuarioService {
 
         UsuarioResponseDTO usuarioResponse = modelMapper.map(clienteSalvo, UsuarioResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponse);
-    }public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
+    }
+
+    public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
         Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
-        PrestadorResponseDTO response = new PrestadorResponseDTO(); // Instanciando o DTO
+        PrestadorResponseDTO response = new PrestadorResponseDTO();
 
         if (prestador.getTipoPrestador() == TipoPrestador.AUTONOMO) {
             if (prestador.getCpf() == null || prestador.getCpf().isEmpty()) {

@@ -80,7 +80,7 @@ public class Usuario {
 
 
     @Column(name = "SEXO")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private SexoOpcao sexoOpcao;
 
     @Column(name = "CONF_SENHA")
