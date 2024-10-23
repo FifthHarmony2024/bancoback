@@ -1,3 +1,4 @@
+/*
 package br.com.hommei.security;
 
 import jakarta.servlet.FilterChain;
@@ -13,13 +14,14 @@ import java.util.Optional;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+*/
 
     //@Autowired
     //private JwtToken jwtToken;
-
+/*
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //var token = getToken(request);
+    */    //var token = getToken(request);
         //if (token.isEmpty()) {
         //    filterChain.doFilter(request, response);
         //    return;
@@ -35,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //context.setAuthentication(authToken);
         //SecurityContextHolder.setContext(context);
 
-        filterChain.doFilter(request, response);
+      /*  filterChain.doFilter(request, response);
     }
 
     private Optional<String> getToken(HttpServletRequest request) {
@@ -46,3 +48,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
 }
+*/

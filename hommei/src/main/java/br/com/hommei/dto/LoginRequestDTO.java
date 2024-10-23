@@ -1,3 +1,4 @@
+/*
 package br.com.hommei.dto;
 
 import lombok.AllArgsConstructor;
@@ -15,3 +16,4 @@ public class LoginRequestDTO {
     private String senha;
 
 }
+*/

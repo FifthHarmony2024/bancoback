@@ -5,17 +5,22 @@ import br.com.hommei.dto.PrestadorResponseDTO;
 import br.com.hommei.dto.UsuarioInsercaoDTO;
 import br.com.hommei.dto.UsuarioResponseDTO;
 import br.com.hommei.dto.PrestadorInsercaoDTO;
+import br.com.hommei.entity.Categoria;
 import br.com.hommei.entity.Prestador;
 import br.com.hommei.entity.Usuario;
 import br.com.hommei.enuns.TipoPrestador;
 import br.com.hommei.mapper.ModelMapperCustom;
+import br.com.hommei.repository.CategoriaRepository;
 import br.com.hommei.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+/*
 import org.springframework.security.crypto.password.PasswordEncoder;
+*/
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -29,8 +34,10 @@ public class UsuarioService {
     private ModelMapperCustom modelMapper;
 
     @Autowired
+    private CategoriaRepository categoriaRepository;
+    /*@Autowired
     private PasswordEncoder passwordEncoder;
-
+*/
 
     public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(UsuarioInsercaoDTO usuarioDTO) {
         log.info("Dados do usuário recebidos: {}", usuarioDTO);
@@ -38,11 +45,15 @@ public class UsuarioService {
         Usuario usuario = modelMapper.map(usuarioDTO, Usuario.class);
         log.info("Dados do usuário após mapeamento: {}", usuario);
 
+/*
 
         String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());
         log.info("Senha Cifrada => {}", senhaCifrada);
+*/
 
+/*
         usuario.setSenha(senhaCifrada);
+*/
         Usuario clienteSalvo = repository.save(usuario);
         log.info("Cliente salvo: {}", clienteSalvo);
 
@@ -70,14 +81,18 @@ public class UsuarioService {
             prestador.setCpf(null);
         }
 
-        String senhaCifrada = passwordEncoder.encode(prestadorDTO.getSenha());
-        log.info("Senha Cifrada para Prestador => {}", senhaCifrada);
-        prestador.setSenha(senhaCifrada);
+        if (prestadorDTO.getIdCategoria() != null) {
+            Categoria categoria = categoriaRepository.findById(prestadorDTO.getIdCategoria())
+                    .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+            prestador.setCategoria(categoria);
+        } else {
+            response.setMensagemErro("ID da categoria é obrigatório.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         Prestador prestadorSalvo = repository.save(prestador);
         response = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 
 }

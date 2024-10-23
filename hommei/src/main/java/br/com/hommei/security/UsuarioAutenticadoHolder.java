@@ -1,6 +1,8 @@
+/*
 package br.com.hommei.security;
 
 public class UsuarioAutenticadoHolder {
+*/
 
     //public static Optional<UsuarioAutenticadoDTO> get() {
     //    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -15,5 +17,5 @@ public class UsuarioAutenticadoHolder {
     //public static Usuario getUsuario() {
     //    return get().map(UsuarioAutenticadoDTO::toUsuario).orElse(null);
     //}
-
-}
+/*
+}*/

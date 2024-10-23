@@ -1,3 +1,4 @@
+/*
 package br.com.hommei.security;
 
 import io.jsonwebtoken.Claims;
@@ -28,6 +29,7 @@ public class JwtToken {
                .parseClaimsJws(token)
              .getBody();
     }
+*/
 
 
     // bate no banco
@@ -53,4 +55,4 @@ public class JwtToken {
     //                                .build();
     //}
 
-}
+/*}*/
