@@ -1,5 +1,6 @@
 package br.com.hommei.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,5 +20,6 @@ public class Categoria {
     private String nomeCategoria;
 
     @OneToMany(mappedBy = "categoria")
+    @JsonManagedReference
     private List<Prestador> prestadores;
 }

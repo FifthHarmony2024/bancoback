@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -28,7 +29,7 @@ public class Postagem {
     private String tipoArquivo;
 
     @Column(name = "DT_POSTAGEM")
-    private Date dtPostagem;
+    private LocalDateTime dtPostagem;
 
 
 }

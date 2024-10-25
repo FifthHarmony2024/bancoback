@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -25,10 +26,7 @@ public class Pagamento {
     private FormaPgto formaPgto;
 
     @Column(name = "DATA_PG")
-    private Date dataPagamento;
-
-    @Column(name = "VALOR")
-    private BigDecimal valor;
+    private LocalDateTime dataPagamento;
 
     @ManyToOne
     @JoinColumn(name = "ID_CONTRATO")

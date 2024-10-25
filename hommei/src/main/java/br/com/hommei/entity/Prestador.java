@@ -1,6 +1,7 @@
 package br.com.hommei.entity;
 
 import br.com.hommei.enuns.TipoPrestador;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -21,6 +22,7 @@ public class Prestador extends Usuario {
 
     @ManyToOne
     @JoinColumn(name = "ID_CATEGORIA", nullable = false)
+    @JsonBackReference
     private Categoria categoria;
 
     @Column(name = "TIPO_PRESTADOR")

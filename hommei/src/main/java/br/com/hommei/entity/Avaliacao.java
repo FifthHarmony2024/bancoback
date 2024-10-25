@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -22,7 +23,7 @@ public class Avaliacao {
     private Integer nota;
 
     @Column(name = "DT_AVALIACAO")
-    private Date dtAvaliacao;
+    private LocalDateTime dtAvaliacao;
 
     @ManyToOne
     @JoinColumn(name = "ID_PEDIDO")
