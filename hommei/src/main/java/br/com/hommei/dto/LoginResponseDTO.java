@@ -1,4 +1,4 @@
-/*
+
 package br.com.hommei.dto;
 
 import lombok.Builder;
@@ -11,4 +11,4 @@ public class LoginResponseDTO {
     private String token;
 
 }
-*/
+

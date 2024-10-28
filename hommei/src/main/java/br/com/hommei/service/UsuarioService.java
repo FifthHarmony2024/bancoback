@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 /*
 import org.springframework.security.crypto.password.PasswordEncoder;
 */
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -35,9 +36,10 @@ public class UsuarioService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
-    /*@Autowired
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
-*/
+
 
     public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(UsuarioInsercaoDTO usuarioDTO) {
         log.info("Dados do usuário recebidos: {}", usuarioDTO);
@@ -45,15 +47,15 @@ public class UsuarioService {
         Usuario usuario = modelMapper.map(usuarioDTO, Usuario.class);
         log.info("Dados do usuário após mapeamento: {}", usuario);
 
-/*
+
 
         String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());
         log.info("Senha Cifrada => {}", senhaCifrada);
-*/
 
-/*
+
+
         usuario.setSenha(senhaCifrada);
-*/
+
         Usuario clienteSalvo = repository.save(usuario);
         log.info("Cliente salvo: {}", clienteSalvo);
 

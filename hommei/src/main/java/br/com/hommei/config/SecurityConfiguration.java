@@ -1,4 +1,4 @@
-/*
+
 package br.com.hommei.config;
 
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 public class SecurityConfiguration {
-*/
+
 
     //@Autowired
     //private UserDetailsService userDetailsService;
@@ -22,11 +22,12 @@ public class SecurityConfiguration {
     //@Autowired
     //private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-   /* @Bean
+    @Bean
     public PasswordEncoder passwordEncoder() { //
-       return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
-*/
+
+
     //@Bean
     //public AuthenticationProvider authenticationProvider() {
     //    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -39,11 +40,11 @@ public class SecurityConfiguration {
     //public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
     //    return config.getAuthenticationManager();
     //}
-    /*@Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
            .csrf(AbstractHttpConfigurer::disable)
-           .authorizeHttpRequests(request -> {*//*
+           .authorizeHttpRequests(request -> {
                    request.requestMatchers("/login").permitAll();
                    request.requestMatchers("/usuarios").permitAll();
                    request.requestMatchers("/usuarios/cliente").permitAll();
@@ -57,12 +58,12 @@ public class SecurityConfiguration {
                request.anyRequest().authenticated();
                })
 
-            .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));*/
+            .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
                 //.authenticationProvider(authenticationProvider())
 
      //       .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-     /* return http.build();
+      return http.build();
     }
 
-}*/
+}

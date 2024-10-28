@@ -1,5 +1,6 @@
 package br.com.hommei.controller;
 
+import br.com.hommei.dto.PrestadorResponseDTO;
 import br.com.hommei.entity.Categoria;
 import br.com.hommei.entity.Servico;
 import br.com.hommei.service.CategoriaService;
@@ -32,5 +33,10 @@ public class ServicoController {
 
         List<Servico> servicos = servicoService.buscarServicosPorCategoria(categoriaOptional.get());
         return ResponseEntity.ok(servicos);
+    }
+
+    @GetMapping("/{idServico}/prestadores")
+    public ResponseEntity<List<PrestadorResponseDTO>> buscarPrestadoresPorServico(@PathVariable Integer idServico) {
+        return servicoService.buscarPrestadoresPorServico(idServico);
     }
 }
