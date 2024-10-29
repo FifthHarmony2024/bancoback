@@ -14,7 +14,7 @@ public class Pedido {
     @Column(name = "ID_PEDIDO")
     private Integer idPedido;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "STATUS_SERVICO")
     private StatusServico statusServico;
 

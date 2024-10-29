@@ -31,5 +31,9 @@ public class Postagem {
     @Column(name = "DT_POSTAGEM")
     private LocalDateTime dtPostagem;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_USUARIO", nullable = false)
+    private Usuario usuario;
+
 
 }

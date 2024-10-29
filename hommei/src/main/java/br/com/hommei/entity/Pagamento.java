@@ -22,7 +22,7 @@ public class Pagamento {
     private BigDecimal valorTaxa;
 
     @Column(name = "FORMA_PGT")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private FormaPgto formaPgto;
 
     @Column(name = "DATA_PG")

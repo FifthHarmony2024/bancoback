@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -15,12 +17,14 @@ public class Contrato {
     @Column(name = "ID_CONTRATO")
     private Integer idContrato;
 
-    @Column(name = "PER_TAXA")
+    @Column(name = "PER_TAXA", nullable = false)
     private Double porceTaxa;
 
     @ManyToOne
-    @JoinColumn(name = "ID_PGTO", nullable = false)
-    private Pagamento pagamento;
+    @JoinColumn(name = "ID_USUARIO", nullable = false)
+    private Usuario usuario;
 
-
+    @Column(name = "DATA_ACEITE", nullable = false)
+    private LocalDateTime dataAceite;
 }
+

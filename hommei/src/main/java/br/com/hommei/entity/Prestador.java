@@ -26,7 +26,7 @@ public class Prestador extends Usuario {
     private Categoria categoria;
 
     @Column(name = "TIPO_PRESTADOR")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private TipoPrestador tipoPrestador;
 
     @ManyToMany
