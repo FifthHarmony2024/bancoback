@@ -47,11 +47,8 @@ public class UsuarioService {
         Usuario usuario = modelMapper.map(usuarioDTO, Usuario.class);
         log.info("Dados do usuário após mapeamento: {}", usuario);
 
-
-
         String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());
         log.info("Senha Cifrada => {}", senhaCifrada);
-
 
 
         usuario.setSenha(senhaCifrada);
@@ -64,12 +61,23 @@ public class UsuarioService {
     }
 
     public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
+        // Log dos dados recebidos do prestador
+        log.info("Dados do prestador recebidos: {}", prestadorDTO);
+
         Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
+        log.info("Dados do prestador após mapeamento: {}", prestador);
+
+        // Criptografia da senha
+        String senhaCifrada = passwordEncoder.encode(prestadorDTO.getSenha());
+        log.info("Senha cifrada do prestador: {}", senhaCifrada);
+        prestador.setSenha(senhaCifrada);
+
         PrestadorResponseDTO response = new PrestadorResponseDTO();
 
         if (prestador.getTipoPrestador() == TipoPrestador.AUTONOMO) {
             if (prestador.getCpf() == null || prestador.getCpf().isEmpty()) {
                 response.setMensagemErro("CPF é obrigatório para autônomos.");
+                log.warn("Erro no cadastro: CPF é obrigatório para autônomos.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
             prestador.setCnpj(null);
@@ -78,6 +86,7 @@ public class UsuarioService {
         if (prestador.getTipoPrestador() == TipoPrestador.MICROEMPREENDEDOR) {
             if (prestador.getCnpj() == null || prestador.getCnpj().isEmpty()) {
                 response.setMensagemErro("CNPJ é obrigatório para microempreendedores.");
+                log.warn("Erro no cadastro: CNPJ é obrigatório para microempreendedores.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
             prestador.setCpf(null);
@@ -89,10 +98,13 @@ public class UsuarioService {
             prestador.setCategoria(categoria);
         } else {
             response.setMensagemErro("ID da categoria é obrigatório.");
+            log.warn("Erro no cadastro: ID da categoria é obrigatório.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         Prestador prestadorSalvo = repository.save(prestador);
+        log.info("Prestador salvo: {}", prestadorSalvo);
+
         response = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

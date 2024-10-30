@@ -22,4 +22,12 @@ public class Categoria {
     @OneToMany(mappedBy = "categoria")
     @JsonManagedReference
     private List<Prestador> prestadores;
+
+    @Override
+    public String toString() {
+        return "Categoria{" +
+                "idCategoria=" + idCategoria +
+                ", nomeCategoria='" + nomeCategoria + '\'' +
+                '}';
+    }
 }

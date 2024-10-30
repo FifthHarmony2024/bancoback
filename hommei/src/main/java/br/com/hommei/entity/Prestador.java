@@ -36,4 +36,13 @@ public class Prestador extends Usuario {
             inverseJoinColumns = @JoinColumn(name = "ID_SERV")
     )
     private List<Servico> servico;
+
+    @Override
+    public String toString() {
+        return "Prestador{" +
+                "nomeComercial='" + nomeComercial + '\'' +
+                ", tipoPrestador=" + tipoPrestador +
+                ", categoriaId=" + (categoria != null ? categoria.getIdCategoria() : null) +
+                '}';
+    }
 }
