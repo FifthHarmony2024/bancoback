@@ -13,5 +13,5 @@ public class PrestadorInsercaoDTO extends UsuarioInsercaoDTO{
     private TipoPrestador tipoPrestador;
     @NotNull(message = "A Categoria não pode ser nulo.")
     private Integer idCategoria;
-    private Integer idServico;
+    private List<Integer> idServico;
 }

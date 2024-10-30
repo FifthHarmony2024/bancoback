@@ -7,10 +7,12 @@ import br.com.hommei.dto.UsuarioResponseDTO;
 import br.com.hommei.dto.PrestadorInsercaoDTO;
 import br.com.hommei.entity.Categoria;
 import br.com.hommei.entity.Prestador;
+import br.com.hommei.entity.Servico;
 import br.com.hommei.entity.Usuario;
 import br.com.hommei.enuns.TipoPrestador;
 import br.com.hommei.mapper.ModelMapperCustom;
 import br.com.hommei.repository.CategoriaRepository;
+import br.com.hommei.repository.ServicoRepository;
 import br.com.hommei.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Service
 public class UsuarioService {
@@ -36,6 +41,9 @@ public class UsuarioService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private ServicoRepository servicoRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -61,7 +69,6 @@ public class UsuarioService {
     }
 
     public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
-        // Log dos dados recebidos do prestador
         log.info("Dados do prestador recebidos: {}", prestadorDTO);
 
         Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
@@ -74,6 +81,7 @@ public class UsuarioService {
 
         PrestadorResponseDTO response = new PrestadorResponseDTO();
 
+        // Validações para CPF e CNPJ
         if (prestador.getTipoPrestador() == TipoPrestador.AUTONOMO) {
             if (prestador.getCpf() == null || prestador.getCpf().isEmpty()) {
                 response.setMensagemErro("CPF é obrigatório para autônomos.");
@@ -100,6 +108,16 @@ public class UsuarioService {
             response.setMensagemErro("ID da categoria é obrigatório.");
             log.warn("Erro no cadastro: ID da categoria é obrigatório.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        if (prestadorDTO.getIdServico() != null && !prestadorDTO.getIdServico().isEmpty()) {
+            List<Servico> servicos = new ArrayList<>();
+            for (Integer idServico : prestadorDTO.getIdServico()) {
+                Servico servico = servicoRepository.findById(idServico)
+                        .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado"));
+                servicos.add(servico);
+            }
+            prestador.setServico(servicos);
         }
 
         Prestador prestadorSalvo = repository.save(prestador);
