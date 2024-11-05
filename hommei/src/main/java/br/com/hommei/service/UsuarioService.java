@@ -9,6 +9,7 @@ import br.com.hommei.entity.Categoria;
 import br.com.hommei.entity.Prestador;
 import br.com.hommei.entity.Servico;
 import br.com.hommei.entity.Usuario;
+import br.com.hommei.enuns.RoleEnum;
 import br.com.hommei.enuns.TipoPrestador;
 import br.com.hommei.mapper.ModelMapperCustom;
 import br.com.hommei.repository.CategoriaRepository;
@@ -58,6 +59,9 @@ public class UsuarioService {
         String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());
         log.info("Senha Cifrada => {}", senhaCifrada);
 
+        // Definir a role como CLIENTE
+        usuario.setRole(RoleEnum.CLIENTE);
+        log.info("Role definida como CLIENTE para o novo usuário.");
 
         usuario.setSenha(senhaCifrada);
 
@@ -126,5 +130,17 @@ public class UsuarioService {
         response = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorId(Integer idUsuario) {
+        log.info("Buscando dados do usuário com ID: {}", idUsuario);
+
+        Usuario usuario = repository.findById(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        UsuarioResponseDTO usuarioResponse = modelMapper.map(usuario, UsuarioResponseDTO.class);
+
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioResponse);
+    }
+
 
 }

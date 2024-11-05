@@ -42,4 +42,10 @@ public class UsuarioController {
         );
         return ResponseEntity.badRequest().body(errors); // Retorna um mapa de campo -> mensagem de erro
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> getUsuario(@PathVariable Integer id) {
+        return service.buscarUsuarioPorId(id);
+    }
 }
