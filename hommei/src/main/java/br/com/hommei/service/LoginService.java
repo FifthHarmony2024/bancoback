@@ -6,7 +6,11 @@ import br.com.hommei.dto.LoginResponseDTO;
 import br.com.hommei.dto.UsuarioAutenticadoDTO;
 import br.com.hommei.enuns.RoleEnum;
 import br.com.hommei.repository.UsuarioRepository;
+import br.com.hommei.security.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +20,15 @@ import java.util.UUID;
 public class LoginService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private JwtToken token;
 
 
     public LoginResponseDTO autenticar(LoginRequestDTO request) {
-        return LoginResponseDTO.builder().token(UUID.randomUUID().toString()).build();
+        var usuario = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmailLogin(),request.getSenha()));
+        return LoginResponseDTO.builder().token(token.gerar((UserDetails) usuario.getPrincipal())).build();
     }
 
 
