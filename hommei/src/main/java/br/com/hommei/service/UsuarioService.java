@@ -24,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 /*
 import org.springframework.security.crypto.password.PasswordEncoder;
 */
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -139,8 +141,36 @@ public class UsuarioService {
 
         UsuarioResponseDTO usuarioResponse = modelMapper.map(usuario, UsuarioResponseDTO.class);
 
+        // Garante que o usuário foi encontrado e o DTO está populado
+        if (usuarioResponse == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(usuarioResponse);
     }
 
+    public ResponseEntity<UsuarioResponseDTO> getUsuarioLogado() {
+        // Obtém a autenticação do usuário logado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // Se a autenticação for nula, significa que o usuário não está autenticado
+        if (authentication == null) {
+            log.error("Usuário não autenticado.");
+            return ResponseEntity.status(403).body(null);  // Forbidden (403)
+        }
+
+        // Obtém o login (normalmente o email) a partir do token JWT
+        String login = authentication.getName();
+        log.info("Usuário logado: {}", login);
+
+        // Busca o usuário pelo login
+        Usuario usuario = repository.findByEmailLogin(login)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        // Mapeia a entidade para o DTO
+        UsuarioResponseDTO usuarioResponse = modelMapper.map(usuario, UsuarioResponseDTO.class);
+
+        // Retorna as informações do usuário
+        return ResponseEntity.ok(usuarioResponse);
+    }
 }

@@ -4,10 +4,16 @@ import br.com.hommei.dto.UsuarioInsercaoDTO;  // DTO de inserção de cliente
 import br.com.hommei.dto.UsuarioResponseDTO;  // DTO de resposta para cliente
 import br.com.hommei.dto.PrestadorInsercaoDTO;  // DTO de inserção de prestador
 import br.com.hommei.dto.PrestadorResponseDTO;  // DTO de resposta para prestador
+import br.com.hommei.entity.Usuario;
+import br.com.hommei.mapper.ModelMapperCustom;
+import br.com.hommei.repository.UsuarioRepository;
 import br.com.hommei.service.UsuarioService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +28,12 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService service;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ModelMapperCustom modelMapper;
 
     @PostMapping("/cliente")
     public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(@Valid @RequestBody UsuarioInsercaoDTO usuarioDTO) {
@@ -43,9 +55,14 @@ public class UsuarioController {
         return ResponseEntity.badRequest().body(errors); // Retorna um mapa de campo -> mensagem de erro
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> getUsuario(@PathVariable Integer id) {
         return service.buscarUsuarioPorId(id);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioResponseDTO> getUsuarioLogado() {
+        return service.getUsuarioLogado();
+    }
+
 }
