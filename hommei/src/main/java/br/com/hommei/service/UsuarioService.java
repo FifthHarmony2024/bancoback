@@ -28,7 +28,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,10 +160,40 @@ public class UsuarioService {
         Usuario usuario = repository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
+        if (usuario.getFotoPerfil() == null || usuario.getFotoPerfil().isEmpty()) {
+            usuario.setFotoPerfil("fotoPerfil/fotoPadrao.png");
+        }
+
         UsuarioResponseDTO usuarioResponse = modelMapper.map(usuario, UsuarioResponseDTO.class);
+
         log.info("Dados do perfil do usuário: {}", usuarioResponse);
 
         return ResponseEntity.ok(usuarioResponse);
     }
 
+
+    public UsuarioResponseDTO uploadFotoPerfil(Integer idUsuario, MultipartFile file) throws IOException {
+        log.info("Upload de foto de perfil para o usuário ID: {}", idUsuario);
+
+        Usuario usuario = repository.findById(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        String pastaFotosPerfil = "fotos-perfil/";
+        Path caminhoDiretorio = Paths.get(pastaFotosPerfil);
+
+        if (!Files.exists(caminhoDiretorio)) {
+            Files.createDirectories(caminhoDiretorio);
+        }
+
+        String nomeArquivo = "perfil_" + idUsuario + "_" + file.getOriginalFilename();
+        Path caminhoArquivo = caminhoDiretorio.resolve(nomeArquivo);
+        Files.copy(file.getInputStream(), caminhoArquivo, StandardCopyOption.REPLACE_EXISTING);
+
+        usuario.setFotoPerfil(caminhoArquivo.toString());
+        repository.save(usuario);
+
+        log.info("Foto de perfil salva em: {}", caminhoArquivo);
+
+        return modelMapper.map(usuario, UsuarioResponseDTO.class);
+    }
 }

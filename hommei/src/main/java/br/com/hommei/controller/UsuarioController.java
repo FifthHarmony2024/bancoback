@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +72,17 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponseDTO> buscarDadosPerfil(@PathVariable Integer id) {
         log.info("Solicitando dados do perfil para o usuário com ID: {}", id);
         return service.buscarDadosPerfil(id);
+    }
+
+    @PostMapping("/{id}/fotoPerfil")
+    public ResponseEntity<UsuarioResponseDTO> uploadFotoPerfil(@PathVariable Integer id,
+                                                               @RequestPart("file") MultipartFile file) {
+        try {
+            UsuarioResponseDTO usuarioResponse = service.uploadFotoPerfil(id, file);
+            return ResponseEntity.ok(usuarioResponse);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 

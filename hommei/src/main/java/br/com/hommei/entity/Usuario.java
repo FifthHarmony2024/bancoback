@@ -78,7 +78,6 @@ public class Usuario {
     @Column(name = "DATA_DE_NASCIMENTO")
     private LocalDate dataDeNascimento;
 
-
     @Column(name = "SEXO")
     @Enumerated(EnumType.STRING)
     private SexoOpcao sexoOpcao;
@@ -86,5 +85,7 @@ public class Usuario {
     @Column(name = "CONF_SENHA")
     private String confSenha;
 
+    @Column(name = "FOTO_PERFIL")
+    private String fotoPerfil;
 
 }

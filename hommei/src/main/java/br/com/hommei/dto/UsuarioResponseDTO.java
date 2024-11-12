@@ -27,4 +27,5 @@ public class UsuarioResponseDTO {
 
         private SexoOpcao sexoOpcao;
         private String confSenha;
+        private String fotoPerfil;
 }
