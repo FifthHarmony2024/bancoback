@@ -141,7 +141,6 @@ public class UsuarioService {
 
         UsuarioResponseDTO usuarioResponse = modelMapper.map(usuario, UsuarioResponseDTO.class);
 
-        // Garante que o usuário foi encontrado e o DTO está populado
         if (usuarioResponse == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -149,28 +148,16 @@ public class UsuarioService {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioResponse);
     }
 
-    public ResponseEntity<UsuarioResponseDTO> getUsuarioLogado() {
-        // Obtém a autenticação do usuário logado
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<UsuarioResponseDTO> buscarDadosPerfil(Integer idUsuario) {
+        log.info("Buscando dados do perfil para o usuário com ID: {}", idUsuario);
 
-        // Se a autenticação for nula, significa que o usuário não está autenticado
-        if (authentication == null) {
-            log.error("Usuário não autenticado.");
-            return ResponseEntity.status(403).body(null);  // Forbidden (403)
-        }
-
-        // Obtém o login (normalmente o email) a partir do token JWT
-        String login = authentication.getName();
-        log.info("Usuário logado: {}", login);
-
-        // Busca o usuário pelo login
-        Usuario usuario = repository.findByEmailLogin(login)
+        Usuario usuario = repository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        // Mapeia a entidade para o DTO
         UsuarioResponseDTO usuarioResponse = modelMapper.map(usuario, UsuarioResponseDTO.class);
+        log.info("Dados do perfil do usuário: {}", usuarioResponse);
 
-        // Retorna as informações do usuário
         return ResponseEntity.ok(usuarioResponse);
     }
+
 }

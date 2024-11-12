@@ -10,6 +10,7 @@ import br.com.hommei.repository.UsuarioRepository;
 import br.com.hommei.service.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Slf4j
 @RequestMapping("/usuarios")
 @CrossOrigin(origins = "*")
 public class UsuarioController {
@@ -57,12 +59,19 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> getUsuario(@PathVariable Integer id) {
-        return service.buscarUsuarioPorId(id);
+        log.info("Buscando dados do usuário com ID: {}", id);
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        UsuarioResponseDTO usuarioResponse = modelMapper.map(usuario, UsuarioResponseDTO.class);
+        return ResponseEntity.ok(usuarioResponse);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<UsuarioResponseDTO> getUsuarioLogado() {
-        return service.getUsuarioLogado();
+    @GetMapping("/{id}/perfil")
+    public ResponseEntity<UsuarioResponseDTO> buscarDadosPerfil(@PathVariable Integer id) {
+        log.info("Solicitando dados do perfil para o usuário com ID: {}", id);
+        return service.buscarDadosPerfil(id);
     }
+
+
 
 }
