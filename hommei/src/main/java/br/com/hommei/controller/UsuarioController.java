@@ -1,9 +1,6 @@
 package br.com.hommei.controller;
 
-import br.com.hommei.dto.UsuarioInsercaoDTO;  // DTO de inserção de cliente
-import br.com.hommei.dto.UsuarioResponseDTO;  // DTO de resposta para cliente
-import br.com.hommei.dto.PrestadorInsercaoDTO;  // DTO de inserção de prestador
-import br.com.hommei.dto.PrestadorResponseDTO;  // DTO de resposta para prestador
+import br.com.hommei.dto.*;
 import br.com.hommei.entity.Usuario;
 import br.com.hommei.mapper.ModelMapperCustom;
 import br.com.hommei.repository.UsuarioRepository;
@@ -12,16 +9,11 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -74,15 +66,14 @@ public class UsuarioController {
         return service.buscarDadosPerfil(id);
     }
 
-    @PostMapping("/{id}/fotoPerfil")
-    public ResponseEntity<UsuarioResponseDTO> uploadFotoPerfil(@PathVariable Integer id,
-                                                               @RequestPart("file") MultipartFile file) {
-        try {
-            UsuarioResponseDTO usuarioResponse = service.uploadFotoPerfil(id, file);
-            return ResponseEntity.ok(usuarioResponse);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
+
+    @PutMapping("/{id}/atualizar")
+    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(
+            @PathVariable Integer id,
+            @Valid @RequestBody UsuarioAtualizacaoDTO atualizacaoDTO) {
+
+        return service.atualizarUsuario(id, atualizacaoDTO);
     }
 
 

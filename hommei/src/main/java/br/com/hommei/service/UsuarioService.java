@@ -1,10 +1,6 @@
 package br.com.hommei.service;
 
-import br.com.hommei.config.ModelMapperConfig;
-import br.com.hommei.dto.PrestadorResponseDTO;
-import br.com.hommei.dto.UsuarioInsercaoDTO;
-import br.com.hommei.dto.UsuarioResponseDTO;
-import br.com.hommei.dto.PrestadorInsercaoDTO;
+import br.com.hommei.dto.*;
 import br.com.hommei.entity.Categoria;
 import br.com.hommei.entity.Prestador;
 import br.com.hommei.entity.Servico;
@@ -16,16 +12,11 @@ import br.com.hommei.repository.CategoriaRepository;
 import br.com.hommei.repository.ServicoRepository;
 import br.com.hommei.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-/*
-import org.springframework.security.crypto.password.PasswordEncoder;
-*/
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,7 +58,6 @@ public class UsuarioService {
         String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());
         log.info("Senha Cifrada => {}", senhaCifrada);
 
-        // Definir a role como CLIENTE
         usuario.setRole(RoleEnum.CLIENTE);
         log.info("Role definida como CLIENTE para o novo usuário.");
 
@@ -86,14 +76,12 @@ public class UsuarioService {
         Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
         log.info("Dados do prestador após mapeamento: {}", prestador);
 
-        // Criptografia da senha
         String senhaCifrada = passwordEncoder.encode(prestadorDTO.getSenha());
         log.info("Senha cifrada do prestador: {}", senhaCifrada);
         prestador.setSenha(senhaCifrada);
 
         PrestadorResponseDTO response = new PrestadorResponseDTO();
 
-        // Validações para CPF e CNPJ
         if (prestador.getTipoPrestador() == TipoPrestador.AUTONOMO) {
             if (prestador.getCpf() == null || prestador.getCpf().isEmpty()) {
                 response.setMensagemErro("CPF é obrigatório para autônomos.");
@@ -171,29 +159,56 @@ public class UsuarioService {
         return ResponseEntity.ok(usuarioResponse);
     }
 
-
-    public UsuarioResponseDTO uploadFotoPerfil(Integer idUsuario, MultipartFile file) throws IOException {
-        log.info("Upload de foto de perfil para o usuário ID: {}", idUsuario);
+    @Transactional
+    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(Integer idUsuario, UsuarioAtualizacaoDTO atualizacaoDTO) {
+        log.info("Atualizando informações do usuário com ID: {}", idUsuario);
 
         Usuario usuario = repository.findById(idUsuario)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        String pastaFotosPerfil = "fotos-perfil/";
-        Path caminhoDiretorio = Paths.get(pastaFotosPerfil);
-
-        if (!Files.exists(caminhoDiretorio)) {
-            Files.createDirectories(caminhoDiretorio);
+        if (atualizacaoDTO.getNome() != null) {
+            usuario.setNome(atualizacaoDTO.getNome());
+        }
+        if (atualizacaoDTO.getSobrenome() != null) {
+            usuario.setSobrenome(atualizacaoDTO.getSobrenome());
+        }
+        if (atualizacaoDTO.getSenha() != null) {
+            String senhaCifrada = passwordEncoder.encode(atualizacaoDTO.getSenha());
+            usuario.setSenha(senhaCifrada);
+            log.info("Senha atualizada com sucesso.");
+        }
+        if (atualizacaoDTO.getEmailLogin() != null) {
+            usuario.setEmailLogin(atualizacaoDTO.getEmailLogin());
+        }
+        if (atualizacaoDTO.getTelefone() != null) {
+            usuario.setTelefone(atualizacaoDTO.getTelefone());
+        }
+        if (atualizacaoDTO.getEndereco() != null) {
+            usuario.setEndereco(atualizacaoDTO.getEndereco());
+        }
+        if (atualizacaoDTO.getNumResidencial() != null) {
+            usuario.setNumResidencial(atualizacaoDTO.getNumResidencial());
+        }
+        if (atualizacaoDTO.getBairro() != null) {
+            usuario.setBairro(atualizacaoDTO.getBairro());
+        }
+        if (atualizacaoDTO.getComplementoResi() != null) {
+            usuario.setComplementoResi(atualizacaoDTO.getComplementoResi());
+        }
+        if (atualizacaoDTO.getCep() != null) {
+            usuario.setCep(atualizacaoDTO.getCep());
+        }
+        if (atualizacaoDTO.getCidade() != null) {
+            usuario.setCidade(atualizacaoDTO.getCidade());
+        }
+        if (atualizacaoDTO.getEstado() != null) {
+            usuario.setEstado(atualizacaoDTO.getEstado());
         }
 
-        String nomeArquivo = "perfil_" + idUsuario + "_" + file.getOriginalFilename();
-        Path caminhoArquivo = caminhoDiretorio.resolve(nomeArquivo);
-        Files.copy(file.getInputStream(), caminhoArquivo, StandardCopyOption.REPLACE_EXISTING);
+        Usuario usuarioAtualizado = repository.save(usuario);
+        log.info("Informações do usuário atualizadas: {}", usuarioAtualizado);
 
-        usuario.setFotoPerfil(caminhoArquivo.toString());
-        repository.save(usuario);
-
-        log.info("Foto de perfil salva em: {}", caminhoArquivo);
-
-        return modelMapper.map(usuario, UsuarioResponseDTO.class);
+        UsuarioResponseDTO usuarioResponse = modelMapper.map(usuarioAtualizado, UsuarioResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioResponse);
     }
 }
