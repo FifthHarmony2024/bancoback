@@ -14,4 +14,13 @@ public class PrestadorInsercaoDTO extends UsuarioInsercaoDTO{
     @NotNull(message = "A Categoria não pode ser nulo.")
     private Integer idCategoria;
     private List<Integer> idServico;
+
+    public String getDocumento() {
+        if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {
+            return cnpj != null ? cnpj : "CNPJ não informado";
+        } else if (tipoPrestador == TipoPrestador.AUTONOMO) {
+            return getCpf() != null ? getCpf() : "CPF não informado";
+        }
+        return "Tipo de prestador inválido";
+    }
 }

@@ -19,13 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,26 +63,31 @@ public class UsuarioService {
         UsuarioResponseDTO usuarioResponse = modelMapper.map(clienteSalvo, UsuarioResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponse);
     }
-
     public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
         log.info("Dados do prestador recebidos: {}", prestadorDTO);
 
+        // Mapeamento do DTO para a entidade Prestador
         Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
         log.info("Dados do prestador após mapeamento: {}", prestador);
 
+        // Cifrando a senha
         String senhaCifrada = passwordEncoder.encode(prestadorDTO.getSenha());
         log.info("Senha cifrada do prestador: {}", senhaCifrada);
         prestador.setSenha(senhaCifrada);
 
+        prestador.setRole(RoleEnum.PRESTADOR);
+        log.info("Role definida como PRESTADOR para o novo usuário.");
+
         PrestadorResponseDTO response = new PrestadorResponseDTO();
 
+        // Validação do tipo de prestador
         if (prestador.getTipoPrestador() == TipoPrestador.AUTONOMO) {
             if (prestador.getCpf() == null || prestador.getCpf().isEmpty()) {
                 response.setMensagemErro("CPF é obrigatório para autônomos.");
                 log.warn("Erro no cadastro: CPF é obrigatório para autônomos.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
-            prestador.setCnpj(null);
+            prestador.setCnpj(null); // Garantir que o CNPJ seja nulo para autônomos
         }
 
         if (prestador.getTipoPrestador() == TipoPrestador.MICROEMPREENDEDOR) {
@@ -97,9 +96,10 @@ public class UsuarioService {
                 log.warn("Erro no cadastro: CNPJ é obrigatório para microempreendedores.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
-            prestador.setCpf(null);
+            prestador.setCpf(null); // Garantir que o CPF seja nulo para microempreendedores
         }
 
+        // Validação da categoria
         if (prestadorDTO.getIdCategoria() != null) {
             Categoria categoria = categoriaRepository.findById(prestadorDTO.getIdCategoria())
                     .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
@@ -110,6 +110,7 @@ public class UsuarioService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+        // Validação e associação dos serviços
         if (prestadorDTO.getIdServico() != null && !prestadorDTO.getIdServico().isEmpty()) {
             List<Servico> servicos = new ArrayList<>();
             for (Integer idServico : prestadorDTO.getIdServico()) {
@@ -120,12 +121,15 @@ public class UsuarioService {
             prestador.setServico(servicos);
         }
 
+        // Salvando o prestador no repositório
         Prestador prestadorSalvo = repository.save(prestador);
         log.info("Prestador salvo: {}", prestadorSalvo);
 
+        // Mapeando o prestador salvo para o DTO de resposta
         response = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
     public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorId(Integer idUsuario) {
         log.info("Buscando dados do usuário com ID: {}", idUsuario);
