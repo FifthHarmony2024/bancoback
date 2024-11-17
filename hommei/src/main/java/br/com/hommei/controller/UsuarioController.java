@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -74,6 +75,13 @@ public class UsuarioController {
             @Valid @RequestBody UsuarioAtualizacaoDTO atualizacaoDTO) {
 
         return service.atualizarUsuario(id, atualizacaoDTO);
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<?> buscarServicosOuPrestadores(
+            @RequestParam String termo,
+            @RequestParam(defaultValue = "false") boolean buscarPrestadores) {
+        return service.buscarServicosOuPrestadores(termo, buscarPrestadores);
     }
 
 

@@ -63,6 +63,7 @@ public class SecurityConfiguration {
                    request.requestMatchers("/usuarios/{id}/perfil").permitAll();
                    request.requestMatchers("/usuarios/{id}/atualizar").permitAll();
                    request.requestMatchers("/servicos/**").permitAll();
+                   request.requestMatchers("/usuarios/buscar").permitAll();
 
                request.anyRequest().authenticated();
                })
