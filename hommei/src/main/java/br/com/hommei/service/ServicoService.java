@@ -31,17 +31,5 @@ public class ServicoService {
         return servicoRepository.findByIdCate(categoria);
     }
 
-    public ResponseEntity<List<PrestadorResponseDTO>> buscarPrestadoresPorServico(Integer idServico) {
-        Servico servico = servicoRepository.findById(idServico)
-                .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado"));
-
-        List<Prestador> prestadores = prestadorRepository.findByServico(servico);
-
-        List<PrestadorResponseDTO> prestadorDTOs = prestadores.stream()
-                .map(prestador -> modelMapper.map(prestador, PrestadorResponseDTO.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(prestadorDTOs);
-    }
 }
 

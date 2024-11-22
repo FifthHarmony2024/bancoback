@@ -12,10 +12,8 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByEmailLogin(String emailLogin);
 
-    @Query("SELECT p FROM Prestador p JOIN p.servico s " +
-            "WHERE LOWER(s.nomeServico) LIKE LOWER(CONCAT('%', :termoBusca, '%')) " +
-            "OR LOWER(s.descricaoServico) LIKE LOWER(CONCAT('%', :termoBusca, '%'))")
-    List<Prestador> buscarPrestadoresPorServico(@Param("termoBusca") String termoBusca);
+    List<Prestador> findByNomeComercialContainingIgnoreCaseOrCategoriaNomeCategoriaContainingIgnoreCaseOrServicoNomeServicoContainingIgnoreCaseOrServicoDescricaoServicoContainingIgnoreCase(
+            String nomeComercial, String nomeCategoria, String nomeServico, String descricaoServico);
 
 
 }

@@ -3,6 +3,8 @@ package br.com.hommei.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "SERVICO")
@@ -22,5 +24,9 @@ public class Servico {
     @ManyToOne
     @JoinColumn(name = "ID_CATEGORIA")
     private Categoria idCate;
+
+    @ManyToMany(mappedBy = "servico")
+    private List<Prestador> prestadores;
+
 
 }

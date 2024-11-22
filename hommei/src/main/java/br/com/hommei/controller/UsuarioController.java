@@ -76,13 +76,14 @@ public class UsuarioController {
 
         return service.atualizarUsuario(id, atualizacaoDTO);
     }
-
-    @GetMapping("/buscar")
-    public ResponseEntity<?> buscarServicosOuPrestadores(
-            @RequestParam String termo,
-            @RequestParam(defaultValue = "false") boolean buscarPrestadores) {
-        return service.buscarServicosOuPrestadores(termo, buscarPrestadores);
+    @GetMapping("/prestadores/buscar-termo")
+    public ResponseEntity<?> buscarPrestadoresPorNomeCategoriaOuServico(@RequestParam String termo) {
+        log.info("Recebida requisição de busca com termo: {}", termo);
+        return service.buscarPrestadoresPorNomeComercialOuCategoriaOuServico(termo);
     }
+
+
+
 
 
 

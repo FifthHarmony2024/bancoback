@@ -35,8 +35,5 @@ public class ServicoController {
         return ResponseEntity.ok(servicos);
     }
 
-    @GetMapping("/{idServico}/prestadores")
-    public ResponseEntity<List<PrestadorResponseDTO>> buscarPrestadoresPorServico(@PathVariable Integer idServico) {
-        return servicoService.buscarPrestadoresPorServico(idServico);
-    }
+
 }

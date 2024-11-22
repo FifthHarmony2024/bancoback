@@ -11,9 +11,5 @@ import java.util.List;
 public interface ServicoRepository extends JpaRepository<Servico,Integer> {
         List<Servico> findByIdCate(Categoria idCate);
 
-        @Query("SELECT s FROM Servico s WHERE LOWER(s.nomeServico) LIKE LOWER(CONCAT('%', :termoBusca, '%')) " +
-                "OR LOWER(s.descricaoServico) LIKE LOWER(CONCAT('%', :termoBusca, '%'))")
-        List<Servico> buscarServicosPorNomeOuDescricao(@Param("termoBusca") String termoBusca);
-
 
 }

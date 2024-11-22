@@ -215,37 +215,29 @@ public class UsuarioService {
         UsuarioResponseDTO usuarioResponse = modelMapper.map(usuarioAtualizado, UsuarioResponseDTO.class);
         return ResponseEntity.status(HttpStatus.OK).body(usuarioResponse);
     }
-
-    public ResponseEntity<?> buscarServicosOuPrestadores(String termoBusca, boolean buscarPrestadores) {
-        log.info("Iniciando busca por termo: {}. Buscar Prestadores: {}", termoBusca, buscarPrestadores);
+    public ResponseEntity<?> buscarPrestadoresPorNomeComercialOuCategoriaOuServico(String termoBusca) {
+        log.info("Buscando prestadores pelo termo: {}", termoBusca);
 
         if (termoBusca == null || termoBusca.trim().isEmpty()) {
             log.warn("Termo de busca vazio.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("O termo de busca não pode ser vazio.");
         }
 
-        if (buscarPrestadores) {
-            // Buscar prestadores que oferecem serviços correspondentes ao termo
-            List<Prestador> prestadores = repository.buscarPrestadoresPorServico(termoBusca);
-            if (prestadores.isEmpty()) {
-                log.info("Nenhum prestador encontrado para o termo de busca: {}", termoBusca);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum prestador encontrado para o termo informado.");
-            }
-            List<PrestadorResponseDTO> prestadoresDTO = prestadores.stream()
-                    .map(prestador -> modelMapper.map(prestador, PrestadorResponseDTO.class))
-                    .toList();
-            return ResponseEntity.ok(prestadoresDTO);
-        } else {
-            // Buscar serviços pelo nome ou descrição
-            List<Servico> servicos = servicoRepository.buscarServicosPorNomeOuDescricao(termoBusca);
-            if (servicos.isEmpty()) {
-                log.info("Nenhum serviço encontrado para o termo de busca: {}", termoBusca);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum serviço encontrado para o termo informado.");
-            }
-            // Retornar diretamente a entidade Servico
-            return ResponseEntity.ok(servicos);
-        }
-    }
+        // Busca no repositório pelo nome comercial, categoria, nome do serviço ou descrição do serviço
+        List<Prestador> prestadores = repository.findByNomeComercialContainingIgnoreCaseOrCategoriaNomeCategoriaContainingIgnoreCaseOrServicoNomeServicoContainingIgnoreCaseOrServicoDescricaoServicoContainingIgnoreCase(
+                termoBusca, termoBusca, termoBusca, termoBusca);
 
+        if (prestadores.isEmpty()) {
+            log.info("Nenhum prestador encontrado para o termo de busca: {}", termoBusca);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum prestador encontrado com o termo informado.");
+        }
+
+        // Mapeia os resultados para um DTO de resposta
+        List<PrestadorResponseDTO> prestadoresDTO = prestadores.stream()
+                .map(prestador -> modelMapper.map(prestador, PrestadorResponseDTO.class))
+                .toList();
+
+        return ResponseEntity.ok(prestadoresDTO);
+    }
 
 }
