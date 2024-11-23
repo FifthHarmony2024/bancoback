@@ -9,6 +9,7 @@ import br.com.hommei.enuns.RoleEnum;
 import br.com.hommei.enuns.TipoPrestador;
 import br.com.hommei.mapper.ModelMapperCustom;
 import br.com.hommei.repository.CategoriaRepository;
+import br.com.hommei.repository.PrestadorRepository;
 import br.com.hommei.repository.ServicoRepository;
 import br.com.hommei.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,6 +44,8 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private PrestadorRepository prestadorRepository;
 
     public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(UsuarioInsercaoDTO usuarioDTO) {
         log.info("Dados do usuário recebidos: {}", usuarioDTO);
@@ -163,6 +167,7 @@ public class UsuarioService {
         return ResponseEntity.ok(usuarioResponse);
     }
 
+
     @Transactional
     public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(Integer idUsuario, UsuarioAtualizacaoDTO atualizacaoDTO) {
         log.info("Atualizando informações do usuário com ID: {}", idUsuario);
@@ -215,6 +220,7 @@ public class UsuarioService {
         UsuarioResponseDTO usuarioResponse = modelMapper.map(usuarioAtualizado, UsuarioResponseDTO.class);
         return ResponseEntity.status(HttpStatus.OK).body(usuarioResponse);
     }
+
     public ResponseEntity<?> buscarPrestadoresPorNomeComercialOuCategoriaOuServico(String termoBusca) {
         log.info("Buscando prestadores pelo termo: {}", termoBusca);
 
@@ -223,7 +229,6 @@ public class UsuarioService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("O termo de busca não pode ser vazio.");
         }
 
-        // Busca no repositório pelo nome comercial, categoria, nome do serviço ou descrição do serviço
         List<Prestador> prestadores = repository.findByNomeComercialContainingIgnoreCaseOrCategoriaNomeCategoriaContainingIgnoreCaseOrServicoNomeServicoContainingIgnoreCaseOrServicoDescricaoServicoContainingIgnoreCase(
                 termoBusca, termoBusca, termoBusca, termoBusca);
 
@@ -232,7 +237,6 @@ public class UsuarioService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum prestador encontrado com o termo informado.");
         }
 
-        // Mapeia os resultados para um DTO de resposta
         List<PrestadorResponseDTO> prestadoresDTO = prestadores.stream()
                 .map(prestador -> modelMapper.map(prestador, PrestadorResponseDTO.class))
                 .toList();

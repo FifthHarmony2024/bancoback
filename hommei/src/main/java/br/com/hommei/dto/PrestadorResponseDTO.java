@@ -3,11 +3,17 @@ package br.com.hommei.dto;
 import br.com.hommei.enuns.TipoPrestador;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class PrestadorResponseDTO extends UsuarioResponseDTO{
+
     private String cnpj;
     private TipoPrestador tipoPrestador;
     private String mensagemErro;
+    private String nomeComercial;
+    private String nomeCategoria;
+    private List<String> servicos;
 
     public String getDocumento() {
         if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {
