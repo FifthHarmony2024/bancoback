@@ -30,4 +30,5 @@ public class Categoria {
                 ", nomeCategoria='" + nomeCategoria + '\'' +
                 '}';
     }
+
 }

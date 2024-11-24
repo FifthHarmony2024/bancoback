@@ -70,11 +70,9 @@ public class UsuarioService {
     public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
         log.info("Dados do prestador recebidos: {}", prestadorDTO);
 
-        // Mapeamento do DTO para a entidade Prestador
         Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
         log.info("Dados do prestador após mapeamento: {}", prestador);
 
-        // Cifrando a senha
         String senhaCifrada = passwordEncoder.encode(prestadorDTO.getSenha());
         log.info("Senha cifrada do prestador: {}", senhaCifrada);
         prestador.setSenha(senhaCifrada);
@@ -84,14 +82,13 @@ public class UsuarioService {
 
         PrestadorResponseDTO response = new PrestadorResponseDTO();
 
-        // Validação do tipo de prestador
         if (prestador.getTipoPrestador() == TipoPrestador.AUTONOMO) {
             if (prestador.getCpf() == null || prestador.getCpf().isEmpty()) {
                 response.setMensagemErro("CPF é obrigatório para autônomos.");
                 log.warn("Erro no cadastro: CPF é obrigatório para autônomos.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
-            prestador.setCnpj(null); // Garantir que o CNPJ seja nulo para autônomos
+            prestador.setCnpj(null);
         }
 
         if (prestador.getTipoPrestador() == TipoPrestador.MICROEMPREENDEDOR) {
@@ -100,10 +97,9 @@ public class UsuarioService {
                 log.warn("Erro no cadastro: CNPJ é obrigatório para microempreendedores.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
-            prestador.setCpf(null); // Garantir que o CPF seja nulo para microempreendedores
+            prestador.setCpf(null);
         }
 
-        // Validação da categoria
         if (prestadorDTO.getIdCategoria() != null) {
             Categoria categoria = categoriaRepository.findById(prestadorDTO.getIdCategoria())
                     .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
@@ -114,7 +110,6 @@ public class UsuarioService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        // Validação e associação dos serviços
         if (prestadorDTO.getIdServico() != null && !prestadorDTO.getIdServico().isEmpty()) {
             List<Servico> servicos = new ArrayList<>();
             for (Integer idServico : prestadorDTO.getIdServico()) {
@@ -125,11 +120,9 @@ public class UsuarioService {
             prestador.setServico(servicos);
         }
 
-        // Salvando o prestador no repositório
         Prestador prestadorSalvo = repository.save(prestador);
         log.info("Prestador salvo: {}", prestadorSalvo);
 
-        // Mapeando o prestador salvo para o DTO de resposta
         response = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -165,60 +158,6 @@ public class UsuarioService {
         log.info("Dados do perfil do usuário: {}", usuarioResponse);
 
         return ResponseEntity.ok(usuarioResponse);
-    }
-
-
-    @Transactional
-    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(Integer idUsuario, UsuarioAtualizacaoDTO atualizacaoDTO) {
-        log.info("Atualizando informações do usuário com ID: {}", idUsuario);
-
-        Usuario usuario = repository.findById(idUsuario)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
-
-        if (atualizacaoDTO.getNome() != null) {
-            usuario.setNome(atualizacaoDTO.getNome());
-        }
-        if (atualizacaoDTO.getSobrenome() != null) {
-            usuario.setSobrenome(atualizacaoDTO.getSobrenome());
-        }
-        if (atualizacaoDTO.getSenha() != null) {
-            String senhaCifrada = passwordEncoder.encode(atualizacaoDTO.getSenha());
-            usuario.setSenha(senhaCifrada);
-            log.info("Senha atualizada com sucesso.");
-        }
-        if (atualizacaoDTO.getEmailLogin() != null) {
-            usuario.setEmailLogin(atualizacaoDTO.getEmailLogin());
-        }
-        if (atualizacaoDTO.getTelefone() != null) {
-            usuario.setTelefone(atualizacaoDTO.getTelefone());
-        }
-        if (atualizacaoDTO.getEndereco() != null) {
-            usuario.setEndereco(atualizacaoDTO.getEndereco());
-        }
-        if (atualizacaoDTO.getNumResidencial() != null) {
-            usuario.setNumResidencial(atualizacaoDTO.getNumResidencial());
-        }
-        if (atualizacaoDTO.getBairro() != null) {
-            usuario.setBairro(atualizacaoDTO.getBairro());
-        }
-        if (atualizacaoDTO.getComplementoResi() != null) {
-            usuario.setComplementoResi(atualizacaoDTO.getComplementoResi());
-        }
-        if (atualizacaoDTO.getCep() != null) {
-            usuario.setCep(atualizacaoDTO.getCep());
-        }
-        if (atualizacaoDTO.getCidade() != null) {
-            usuario.setCidade(atualizacaoDTO.getCidade());
-        }
-        if (atualizacaoDTO.getEstado() != null) {
-            usuario.setEstado(atualizacaoDTO.getEstado());
-        }
-
-        Usuario usuarioAtualizado = repository.save(usuario);
-        log.info("Informações do usuário atualizadas: {}", usuarioAtualizado);
-
-        UsuarioResponseDTO usuarioResponse = modelMapper.map(usuarioAtualizado, UsuarioResponseDTO.class);
-        return ResponseEntity.status(HttpStatus.OK).body(usuarioResponse);
     }
 
     public ResponseEntity<?> buscarPrestadoresPorNomeComercialOuCategoriaOuServico(String termoBusca) {
