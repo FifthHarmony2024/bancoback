@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,18 +115,37 @@ public class UsuarioService {
             List<Servico> servicos = new ArrayList<>();
             for (Integer idServico : prestadorDTO.getIdServico()) {
                 Servico servico = servicoRepository.findById(idServico)
-                        .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado"));
+                        .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado: " + idServico));
                 servicos.add(servico);
             }
             prestador.setServico(servicos);
+        } else {
+            response.setMensagemErro("ID dos serviços é obrigatório.");
+            log.warn("Erro no cadastro: ID dos serviços é obrigatório.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         Prestador prestadorSalvo = repository.save(prestador);
         log.info("Prestador salvo: {}", prestadorSalvo);
 
         response = modelMapper.map(prestadorSalvo, PrestadorResponseDTO.class);
+
+        if (prestadorSalvo.getCategoria() != null) {
+            response.setNomeCategoria(prestadorSalvo.getCategoria().getNomeCategoria());
+        }
+
+        if (prestadorSalvo.getServico() != null && !prestadorSalvo.getServico().isEmpty()) {
+            List<String> nomesServicos = prestadorSalvo.getServico().stream()
+                    .map(Servico::getNomeServico)
+                    .collect(Collectors.toList());
+            response.setNomeServico(nomesServicos);
+        } else {
+            response.setNomeServico(Collections.emptyList());
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
 
     public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorId(Integer idUsuario) {

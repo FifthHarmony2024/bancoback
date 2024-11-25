@@ -14,6 +14,8 @@ public class PrestadorInsercaoDTO extends UsuarioInsercaoDTO{
     @NotNull(message = "A Categoria não pode ser nulo.")
     private Integer idCategoria;
     private List<Integer> idServico;
+    private String nomeCategoria;
+    private String nomeServico;
 
     public String getDocumento() {
         if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {

@@ -339,6 +339,8 @@ INSERT INTO SERVICO (NOME_SERVICO, DESCRICAO_SERVICO, ID_CATEGORIA) VALUES ('Rep
 INSERT INTO SERVICO (NOME_SERVICO, DESCRICAO_SERVICO, ID_CATEGORIA) VALUES ('Assistência Técnica de Aparelhos de Gás', 'Conserto e manutenção de equipamentos a gás.', 7);
 INSERT INTO SERVICO (NOME_SERVICO, DESCRICAO_SERVICO, ID_CATEGORIA) VALUES ('Personal Organizer', 'Serviço de organização de ambientes residenciais ou comerciais.', 7);
 
-select * from CATEGORIA;
+select * from PRESTADOR_SERV;
 
 DELETE FROM USUARIO;
+
+select * from PRESTADOR;

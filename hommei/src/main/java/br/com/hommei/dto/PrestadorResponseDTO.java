@@ -13,7 +13,7 @@ public class PrestadorResponseDTO extends UsuarioResponseDTO{
     private String mensagemErro;
     private String nomeComercial;
     private String nomeCategoria;
-    private List<String> servicos;
+    private List<String> nomeServico; // Ou pode ser String se você quiser um serviço único
 
     public String getDocumento() {
         if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {

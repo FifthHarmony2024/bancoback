@@ -1,0 +1,25 @@
+{
+    "nome": "Mariana",
+    "sobrenome": "Silva Rodrigues",
+    "senha": "Mari12345",
+    "emailLogin": "marianasilva@gmail.com",
+    "telefone": "11967544329",
+    "sexoOpcao": "FEMININO",
+    "dataDeNascimento": "1990-05-15",
+    "cpf": "64779993075",
+    "endereco": "Rua Novo Horizonte",
+    "numResidencial": "134",
+    "bairro": "Jardim Pernambuco",
+    "complementoResi": "",
+    "cep": "09844567",
+    "nomeComercial": "Mariana Belo",
+    "idCategoria": 9,
+    "cidade": "São Paulo",
+    "estado": "São Paulo",
+    "role": "PRESTADOR",
+    "confSenha": "Mari12345",
+    "nomeCategoria": "Moda e Beleza",
+    "tipoPrestador": "AUTONOMO",
+    "nomeServico": "Trancistas",  // Nome do serviço (campo opcional se você tiver ID do serviço)
+    "idServico": [132]  // IDs dos serviços a serem associados
+}
