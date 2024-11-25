@@ -73,4 +73,14 @@ public class UsuarioController {
         return service.buscarPrestadoresPorNomeComercialOuCategoriaOuServico(termo);
     }
 
+    @GetMapping("/{id}/perfilPrestador")
+    public ResponseEntity<?> buscarDadosPerfilPrestador(@PathVariable Integer id) {
+        log.info("Recebendo solicitação para buscar o perfil do prestador com ID: {}", id);
+
+        ResponseEntity<?> response = service.buscarDadosPerfilPrestador(id);
+
+        log.info("Retornando dados do perfil do prestador com ID: {}", id);
+        return response;
+    }
+
 }

@@ -19,9 +19,6 @@ public class Categoria {
     @Column(name = "NOME_CATEGORIA")
     private String nomeCategoria;
 
-    @OneToMany(mappedBy = "categoria")
-    @JsonManagedReference
-    private List<Prestador> prestadores;
 
     @Override
     public String toString() {

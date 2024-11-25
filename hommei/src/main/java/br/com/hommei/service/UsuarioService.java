@@ -146,8 +146,6 @@ public class UsuarioService {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-
-
     public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorId(Integer idUsuario) {
         log.info("Buscando dados do usuário com ID: {}", idUsuario);
 
@@ -179,6 +177,43 @@ public class UsuarioService {
 
         return ResponseEntity.ok(usuarioResponse);
     }
+
+    public ResponseEntity<?> buscarDadosPerfilPrestador(Integer idUsuario) {
+        log.info("Buscando dados do perfil do prestador com ID: {}", idUsuario);
+
+        Usuario usuario = repository.findById(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        if (!(usuario instanceof Prestador)) {
+            throw new IllegalArgumentException("O usuário com ID " + idUsuario + " não é um prestador.");
+        }
+
+        Prestador prestador = (Prestador) usuario;
+
+        if (prestador.getFotoPerfil() == null || prestador.getFotoPerfil().isEmpty()) {
+            prestador.setFotoPerfil("fotoPerfil/fotoPadrao.png");
+        }
+
+        PrestadorResponseDTO prestadorResponse = modelMapper.map(prestador, PrestadorResponseDTO.class);
+
+        if (prestador.getCategoria() != null) {
+            prestadorResponse.setNomeCategoria(prestador.getCategoria().getNomeCategoria());
+        }
+
+        if (prestador.getServico() != null && !prestador.getServico().isEmpty()) {
+            List<String> nomesServicos = prestador.getServico().stream()
+                    .map(Servico::getNomeServico)
+                    .collect(Collectors.toList());
+            prestadorResponse.setNomeServico(nomesServicos);
+        } else {
+            prestadorResponse.setNomeServico(Collections.emptyList());
+        }
+
+        log.info("Dados do perfil do prestador: {}", prestadorResponse);
+
+        return ResponseEntity.ok(prestadorResponse);
+    }
+
 
     public ResponseEntity<?> buscarPrestadoresPorNomeComercialOuCategoriaOuServico(String termoBusca) {
         log.info("Buscando prestadores pelo termo: {}", termoBusca);

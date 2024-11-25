@@ -25,8 +25,5 @@ public class Servico {
     @JoinColumn(name = "ID_CATEGORIA")
     private Categoria idCate;
 
-    @ManyToMany(mappedBy = "servico")
-    private List<Prestador> prestadores;
-
 
 }

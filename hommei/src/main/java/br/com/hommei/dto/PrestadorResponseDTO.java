@@ -13,13 +13,13 @@ public class PrestadorResponseDTO extends UsuarioResponseDTO{
     private String mensagemErro;
     private String nomeComercial;
     private String nomeCategoria;
-    private List<String> nomeServico; // Ou pode ser String se você quiser um serviço único
+    private List<String> nomeServico;
 
     public String getDocumento() {
         if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {
             return cnpj != null ? cnpj : "CNPJ não informado";
         } else if (tipoPrestador == TipoPrestador.AUTONOMO) {
-            return getCpf() != null ? getCpf() : "CPF não informado"; // getCpf() vem da classe base
+            return getCpf() != null ? getCpf() : "CPF não informado";
         }
         return "Tipo de prestador inválido";
     }
