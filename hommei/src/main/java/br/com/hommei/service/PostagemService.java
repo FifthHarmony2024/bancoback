@@ -20,29 +20,24 @@ public class PostagemService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Salva uma nova postagem
     public void savePostagem(Postagem postagem) {
         postagemRepository.save(postagem);
     }
 
-    // Busca todas as postagens
     public List<Postagem> getAllPostagens() {
         return postagemRepository.findAll();
     }
 
-    // Busca uma postagem pelo ID
     public Postagem getPostagemById(Integer id) {
         return postagemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Postagem não encontrada."));
     }
 
-    // Deleta uma postagem pelo ID
     public void deletePostagemById(Integer id) {
         Postagem postagem = getPostagemById(id);
         postagemRepository.delete(postagem);
     }
 
-    // Busca um usuário pelo ID
     public Usuario getUsuarioById(Integer id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));

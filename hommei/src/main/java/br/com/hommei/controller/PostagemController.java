@@ -22,17 +22,14 @@ public class PostagemController {
     @Autowired
     private PostagemService postagemService;
 
-    // Endpoint para upload e criação de uma nova postagem
     @PostMapping("/upload")
     public ResponseEntity<String> uploadPostagem(
             @RequestParam("file") MultipartFile file,
             @RequestParam("descricao") String descricao,
             @RequestParam("usuarioId") Integer usuarioId) {
         try {
-            // Salva o arquivo e obtém o caminho/URL
             String url = fileStorageService.saveFile(file);
 
-            // Cria a nova postagem
             Postagem postagem = new Postagem();
             postagem.setUrl(url);
             postagem.setDescricaoPost(descricao);
@@ -41,7 +38,6 @@ public class PostagemController {
             postagem.setResolucao(file.getOriginalFilename());
             postagem.setUsuario(postagemService.getUsuarioById(usuarioId));
 
-            // Salva no banco de dados
             postagemService.savePostagem(postagem);
 
             return ResponseEntity.ok("Upload realizado com sucesso. URL: " + url);
@@ -50,14 +46,12 @@ public class PostagemController {
         }
     }
 
-    // Endpoint para buscar todas as postagens
     @GetMapping
     public ResponseEntity<List<Postagem>> listarPostagens() {
         List<Postagem> postagens = postagemService.getAllPostagens();
         return ResponseEntity.ok(postagens);
     }
 
-    // Endpoint para buscar uma postagem específica por ID
     @GetMapping("/{id}")
     public ResponseEntity<Postagem> buscarPostagemPorId(@PathVariable Integer id) {
         try {
@@ -68,7 +62,6 @@ public class PostagemController {
         }
     }
 
-    // Endpoint para deletar uma postagem por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarPostagem(@PathVariable Integer id) {
         try {
