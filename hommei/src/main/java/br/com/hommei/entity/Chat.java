@@ -23,7 +23,7 @@ public class Chat {
 
     @ManyToOne
     @JoinColumn(name = "ID_USUARIO")
-    private Usuario id;
+    private Usuario usuario;
 
 
 }

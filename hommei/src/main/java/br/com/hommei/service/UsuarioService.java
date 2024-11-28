@@ -20,7 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +49,9 @@ public class UsuarioService {
 
     @Autowired
     private PrestadorRepository prestadorRepository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(UsuarioInsercaoDTO usuarioDTO) {
         log.info("Dados do usuário recebidos: {}", usuarioDTO);
@@ -236,6 +241,35 @@ public class UsuarioService {
                 .toList();
 
         return ResponseEntity.ok(prestadoresDTO);
+    }
+
+    @Transactional
+    public ResponseEntity<String> adicionarFotoPerfil(Integer idUsuario, MultipartFile file) {
+        log.info("Adicionando foto de perfil para o usuário com ID: {}", idUsuario);
+
+        if (file == null || file.isEmpty()) {
+            log.warn("Arquivo de imagem vazio ou nulo.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo de imagem é obrigatório.");
+        }
+
+        Usuario usuario = repository.findById(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        try {
+            // Salva o arquivo e obtém o caminho
+            String filePath = fileStorageService.saveFile(file);
+
+            // Define o caminho da foto no usuário
+            usuario.setFotoPerfil(filePath);
+            repository.save(usuario);
+
+            log.info("Foto de perfil adicionada com sucesso para o usuário ID: {}", idUsuario);
+            return ResponseEntity.status(HttpStatus.OK).body("Foto de perfil atualizada com sucesso.");
+
+        } catch (IOException e) {
+            log.error("Erro ao salvar a foto de perfil: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar a foto de perfil.");
+        }
     }
 
 }
