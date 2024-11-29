@@ -4,6 +4,7 @@ import br.com.hommei.entity.Postagem;
 import br.com.hommei.service.FileStorageService;
 import br.com.hommei.service.PostagemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,5 +76,18 @@ public class PostagemController {
     @GetMapping("/usuario/{idUsuario}")
     public List<Postagem> getPostagensByUsuario(@PathVariable Integer idUsuario) {
         return postagemService.getPostagensByUsuarioId(idUsuario);
+    }
+
+    @GetMapping("/prestador/{idUsuario}")
+    public ResponseEntity<?> getPostagensByPrestadorId(@PathVariable Integer idUsuario) {
+        try {
+            List<Postagem> postagens = postagemService.getPostagensByPrestadorId(idUsuario);
+            if (postagens.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma postagem encontrada para este prestador.");
+            }
+            return ResponseEntity.ok(postagens);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

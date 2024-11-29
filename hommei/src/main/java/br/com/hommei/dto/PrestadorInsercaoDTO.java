@@ -16,6 +16,7 @@ public class PrestadorInsercaoDTO extends UsuarioInsercaoDTO{
     private List<Integer> idServico;
     private String nomeCategoria;
     private String nomeServico;
+    private String fotoPerfil;
 
     public String getDocumento() {
         if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {

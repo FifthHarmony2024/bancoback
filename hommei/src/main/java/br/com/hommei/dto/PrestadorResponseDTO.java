@@ -7,13 +7,14 @@ import java.util.List;
 
 @Data
 public class PrestadorResponseDTO extends UsuarioResponseDTO{
-
+    private Integer idUsuario;
     private String cnpj;
     private TipoPrestador tipoPrestador;
     private String mensagemErro;
     private String nomeComercial;
     private String nomeCategoria;
     private List<String> nomeServico;
+    private String fotoPerfil;
 
     public String getDocumento() {
         if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {

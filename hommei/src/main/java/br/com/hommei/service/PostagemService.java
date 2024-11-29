@@ -48,4 +48,16 @@ public class PostagemService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
         return postagemRepository.findByUsuario(usuario);
     }
+
+    public List<Postagem> getPostagensByPrestadorId(Integer idUsuario) {
+        Usuario prestador = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Prestador não encontrado."));
+
+        if (!(prestador instanceof Usuario)) {
+            throw new IllegalArgumentException("O ID fornecido não pertence a um prestador.");
+        }
+
+        return postagemRepository.findByUsuario(prestador);
+    }
+
 }

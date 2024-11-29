@@ -236,12 +236,33 @@ public class UsuarioService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum prestador encontrado com o termo informado.");
         }
 
-        List<PrestadorResponseDTO> prestadoresDTO = prestadores.stream()
-                .map(prestador -> modelMapper.map(prestador, PrestadorResponseDTO.class))
-                .toList();
+        // Mapear os prestadores para DTOs e incluir os nomes dos serviços e da categoria.
+        List<PrestadorResponseDTO> prestadoresDTO = prestadores.stream().map(prestador -> {
+            PrestadorResponseDTO prestadorDTO = modelMapper.map(prestador, PrestadorResponseDTO.class);
+
+            // Adicionando o nome da categoria
+            if (prestador.getCategoria() != null) {
+                prestadorDTO.setNomeCategoria(prestador.getCategoria().getNomeCategoria());
+            }
+
+            // Adicionando os nomes dos serviços
+            if (prestador.getServico() != null && !prestador.getServico().isEmpty()) {
+                List<String> nomesServicos = prestador.getServico().stream()
+                        .map(Servico::getNomeServico)
+                        .collect(Collectors.toList());
+                prestadorDTO.setNomeServico(nomesServicos);
+            } else {
+                prestadorDTO.setNomeServico(Collections.emptyList());
+            }
+
+            return prestadorDTO;
+        }).toList();
+
+        log.info("Resultado da busca: {}", prestadoresDTO);
 
         return ResponseEntity.ok(prestadoresDTO);
     }
+
 
     @Transactional
     public ResponseEntity<String> adicionarFotoPerfil(Integer idUsuario, MultipartFile file) {
