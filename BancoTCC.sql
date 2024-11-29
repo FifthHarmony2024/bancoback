@@ -345,4 +345,4 @@ select * from PRESTADOR_SERV;
 
 DELETE FROM USUARIO;
 
-select * from PRESTADOR;
+select * from USUARIO;

@@ -26,6 +26,7 @@ public class UsuarioAutenticadoDTO implements UserDetails {
     private RoleEnum role;
 
 
+
     public Usuario toUsuario() {
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(idUsuario);

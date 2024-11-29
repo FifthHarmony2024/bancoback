@@ -92,4 +92,9 @@ public class UsuarioController {
         return service.adicionarFotoPerfil(idUsuario, file);
     }
 
+    @GetMapping("/{idUsuario}/foto-adicionada")
+    public ResponseEntity<String> getFotoPerfil(@PathVariable Integer idUsuario) {
+        return service.getFotoPerfilByUsuarioId(idUsuario);
+    }
+
 }

@@ -37,7 +37,8 @@ public class LoginService {
                                               .nome(mockAutenticado().getNome())
                                               .emailLogin(mockAutenticado().getEmailLogin())
                                               .senha(mockAutenticado().getSenha())
-                                    .build();
+
+                .build();
     }
 
 

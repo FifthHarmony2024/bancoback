@@ -256,10 +256,8 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         try {
-            // Salva o arquivo e obtém o caminho
             String filePath = fileStorageService.saveFile(file);
 
-            // Define o caminho da foto no usuário
             usuario.setFotoPerfil(filePath);
             repository.save(usuario);
 
@@ -271,5 +269,20 @@ public class UsuarioService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar a foto de perfil.");
         }
     }
+
+    @Transactional
+    public ResponseEntity<String> getFotoPerfilByUsuarioId(Integer idUsuario) {
+        Usuario usuario = repository.findById(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
+
+        String fotoPerfil = usuario.getFotoPerfil();
+
+        if (fotoPerfil == null || fotoPerfil.isEmpty()) {
+            return ResponseEntity.ok("uploads/fotoPadrao.png");
+        }
+
+        return ResponseEntity.ok(fotoPerfil);
+    }
+
 
 }
