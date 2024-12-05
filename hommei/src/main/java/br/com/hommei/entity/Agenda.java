@@ -1,6 +1,8 @@
 package br.com.hommei.entity;
 
 
+import br.com.hommei.enuns.SexoOpcao;
+import br.com.hommei.enuns.TipoDia;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,7 +30,11 @@ public class Agenda {
 
     @ManyToOne
     @JoinColumn(name = "ID_USUARIO")
-    private Usuario id;
+    private Usuario usuario;
+
+    @Column(name = "TIPO_DIA")
+    @Enumerated(EnumType.STRING)
+    private TipoDia tipoDia;
 
 
 }

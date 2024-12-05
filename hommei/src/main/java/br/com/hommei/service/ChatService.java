@@ -48,47 +48,40 @@ public class ChatService {
             throw new RuntimeException("Tipo de usuário não autorizado para enviar mensagens!");
         }
 
-        // Salvar a mensagem com os dados completos dos usuários
         chat.setUsuarioRemetente(remetente);
         chat.setUsuarioDestinatario(destinatario);
         chat.setTimestamp(LocalDateTime.now());
 
-        // Aqui você pode adicionar mais detalhes ao salvar, como garantir que outras entidades relacionadas sejam carregadas
 
         return chatRepository.save(chat);
     }
 
     public List<Chat> getMessagesByUser(Integer usuarioId) {
-        // Busca todas as mensagens de um usuário, considerando tanto mensagens enviadas quanto recebidas
         return chatRepository.findByUsuarioRemetente_IdUsuario(usuarioId);
     }
 
-    // Buscar mensagens específicas de um prestador
-    // Dentro do ChatService, crie um método para buscar mensagens para o prestador
     public List<Chat> getMessagesForPrestador(Integer idUsuario) {
-        // Aqui você busca todas as mensagens em que o prestador é o destinatário
         List<Chat> chats = chatRepository.findByUsuarioDestinatario_IdUsuario(idUsuario);
 
-        // Aqui você pode carregar mais informações, caso necessário (como nome do cliente)
         for (Chat chat : chats) {
             Usuario cliente = chat.getUsuarioRemetente();
-            // Você pode garantir que as informações do cliente estão carregadas
         }
 
         return chats;
     }
 
     public List<Chat> getMessagesForCliente(Integer idUsuario) {
-        // Busca todas as mensagens em que o cliente é o destinatário
         List<Chat> chats = chatRepository.findByUsuarioDestinatario_IdUsuario(idUsuario);
 
-        // Carregar as informações do prestador (remetente), se necessário
         for (Chat chat : chats) {
             Usuario prestador = chat.getUsuarioRemetente();
-            // Você pode carregar mais informações do prestador, caso necessário
         }
 
         return chats;
+    }
+
+    public List<Chat> getAllMessagesForUser(Integer idUsuario) {
+        return chatRepository.findAllByUsuarioRemetenteIdUsuarioOrUsuarioDestinatarioIdUsuario(idUsuario, idUsuario);
     }
 
 

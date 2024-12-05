@@ -62,8 +62,9 @@ public class SecurityConfiguration {
                    request.requestMatchers("/servicos/**").permitAll();
                    request.requestMatchers("/usuarios/**").permitAll();
                    request.requestMatchers("/postagens/**").permitAll();
-                   request.requestMatchers("/uploads/**").permitAll(); // Permitir acesso à pasta de uploads
+                   request.requestMatchers("/uploads/**").permitAll();
                    request.requestMatchers("/chat/**").permitAll();
+               request.requestMatchers("/agenda/**").permitAll();
 
                request.anyRequest().authenticated();
                })

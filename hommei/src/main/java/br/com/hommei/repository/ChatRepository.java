@@ -14,5 +14,7 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     List<Chat> findByUsuarioRemetente_IdUsuario(Integer idUsuario);
 
     List<Chat> findByUsuarioDestinatario_IdUsuario(Integer usuarioId);
+    List<Chat> findAllByUsuarioRemetenteIdUsuarioOrUsuarioDestinatarioIdUsuario(Integer remetenteId, Integer destinatarioId);
+
 
 }

@@ -16,27 +16,23 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
-    // Endpoint para enviar uma mensagem
     @PostMapping("/enviar")
     public ResponseEntity<Chat> enviarMensagem(@RequestBody Chat chat) {
         try {
-            // Chama o serviço para enviar a mensagem
             Chat mensagemEnviada = chatService.enviarMensagem(chat);
-            return new ResponseEntity<>(mensagemEnviada, HttpStatus.CREATED);  // Retorna 201 caso a mensagem seja salva com sucesso
+            return new ResponseEntity<>(mensagemEnviada, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            // Retorna erro 400 em caso de exceção
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    // Endpoint para buscar mensagens de um usuário específico
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Chat>> getMessagesByUser(@PathVariable Integer idUsuario) {
+    public ResponseEntity<List<Chat>> getMessagesForUser(@PathVariable Integer idUsuario) {
         try {
-            List<Chat> mensagens = chatService.getMessagesByUser(idUsuario);
-            return new ResponseEntity<>(mensagens, HttpStatus.OK);  // Retorna as mensagens encontradas
+            List<Chat> mensagens = chatService.getAllMessagesForUser(idUsuario);
+            return new ResponseEntity<>(mensagens, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  // Retorna erro caso não consiga buscar as mensagens
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
