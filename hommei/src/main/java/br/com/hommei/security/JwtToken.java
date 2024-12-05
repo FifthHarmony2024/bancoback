@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class JwtToken {
@@ -41,7 +40,7 @@ public class JwtToken {
     public String gerar(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("roles", ((UsuarioAutenticadoDTO)userDetails).getRole())
+                .claim("roles", ((UsuarioAutenticadoDTO)userDetails).getRoleEnum())
                 .claim("id", ((UsuarioAutenticadoDTO)userDetails).getIdUsuario())
                 .claim("nome", ((UsuarioAutenticadoDTO)userDetails).getNome())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -56,7 +55,7 @@ public class JwtToken {
         var role = claims.get("roles", String.class);
         return UsuarioAutenticadoDTO.builder().emailLogin(claims.getSubject())
                                               .idUsuario(claims.get("id", Integer.class))
-                                              .role(RoleEnum.getByValue(role))
+                                              .roleEnum(RoleEnum.getByValue(role))
                                     .build();
     }
 

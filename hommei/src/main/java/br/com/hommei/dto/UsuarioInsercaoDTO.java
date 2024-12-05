@@ -17,7 +17,7 @@ public class UsuarioInsercaoDTO {
     private String telefone;
     private String cpf;
     private String endereco;
-
+    private RoleEnum roleEnum;
     @NotNull(message = "Número residencial não pode ser nulo.")
     private Integer numResidencial;
 

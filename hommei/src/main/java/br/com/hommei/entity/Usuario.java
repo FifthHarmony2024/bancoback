@@ -73,7 +73,7 @@ public class Usuario {
 
     @Column(name = "STATUS_ROLE")
     @Enumerated(EnumType.STRING)
-    private RoleEnum role;
+    private RoleEnum roleEnum;
 
     @Column(name = "DATA_DE_NASCIMENTO")
     private LocalDate dataDeNascimento;

@@ -1,5 +1,6 @@
 package br.com.hommei.dto;
 
+import br.com.hommei.enuns.RoleEnum;
 import br.com.hommei.enuns.TipoPrestador;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class PrestadorInsercaoDTO extends UsuarioInsercaoDTO{
     private String nomeCategoria;
     private String nomeServico;
     private String fotoPerfil;
-
+    private RoleEnum roleEnum;
     public String getDocumento() {
         if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {
             return cnpj != null ? cnpj : "CNPJ não informado";

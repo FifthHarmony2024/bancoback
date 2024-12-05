@@ -1,5 +1,6 @@
 package br.com.hommei.dto;
 
+import br.com.hommei.enuns.RoleEnum;
 import br.com.hommei.enuns.TipoPrestador;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class PrestadorResponseDTO extends UsuarioResponseDTO{
     private String nomeCategoria;
     private List<String> nomeServico;
     private String fotoPerfil;
+    private RoleEnum roleEnum;
 
     public String getDocumento() {
         if (tipoPrestador == TipoPrestador.MICROEMPREENDEDOR) {

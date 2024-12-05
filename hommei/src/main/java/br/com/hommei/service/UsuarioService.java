@@ -62,7 +62,7 @@ public class UsuarioService {
         String senhaCifrada = passwordEncoder.encode(usuarioDTO.getSenha());
         log.info("Senha Cifrada => {}", senhaCifrada);
 
-        usuario.setRole(RoleEnum.CLIENTE);
+        usuario.setRoleEnum(RoleEnum.CLIENTE);
         log.info("Role definida como CLIENTE para o novo usuário.");
 
         usuario.setSenha(senhaCifrada);
@@ -83,7 +83,7 @@ public class UsuarioService {
         log.info("Senha cifrada do prestador: {}", senhaCifrada);
         prestador.setSenha(senhaCifrada);
 
-        prestador.setRole(RoleEnum.PRESTADOR);
+        prestador.setRoleEnum(RoleEnum.PRESTADOR);
         log.info("Role definida como PRESTADOR para o novo usuário.");
 
         PrestadorResponseDTO response = new PrestadorResponseDTO();

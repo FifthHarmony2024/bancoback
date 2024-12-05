@@ -15,15 +15,19 @@ public class Chat {
     @Column(name = "ID_CHAT")
     private Integer idChat;
 
-    @Column(name = "MESSAGE_CHAT")
+    @Column(name = "MESSAGEM_CHAT")
     private String  messagemChat;
 
     @Column(name = "TIMESTAMP")
     private LocalDateTime timestamp;
 
     @ManyToOne
-    @JoinColumn(name = "ID_USUARIO")
-    private Usuario usuario;
+    @JoinColumn(name = "ID_USUARIO_REMETENTE", referencedColumnName = "ID_USUARIO", nullable = false)
+    private Usuario usuarioRemetente;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_USUARIO_DESTINATARIO", referencedColumnName = "ID_USUARIO", nullable = false)
+    private Usuario usuarioDestinatario;
 
 
 }

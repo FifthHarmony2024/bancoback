@@ -23,7 +23,7 @@ public class UsuarioAutenticadoDTO implements UserDetails {
     private String nome;
     private String emailLogin;
     private String senha;
-    private RoleEnum role;
+    private RoleEnum roleEnum;
 
 
 
@@ -35,7 +35,7 @@ public class UsuarioAutenticadoDTO implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getValue()));
+        return List.of(new SimpleGrantedAuthority(roleEnum.getValue()));
     }
     @Override
     public String getPassword() {
