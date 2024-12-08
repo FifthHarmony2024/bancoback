@@ -43,14 +43,14 @@ public class UsuarioController {
         return service.cadastrarPrestador(prestadorDTO);
     }
 
-    // Tratamento de erros de validação
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        System.out.println("Interceptando erro de validação...");
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
-        return ResponseEntity.badRequest().body(errors); // Retorna um mapa de campo -> mensagem de erro
+        return ResponseEntity.badRequest().body(errors);
     }
 
     @GetMapping("/{id}")

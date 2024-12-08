@@ -3,6 +3,7 @@ package br.com.hommei.dto;
 import br.com.hommei.enuns.RoleEnum;
 import br.com.hommei.enuns.SexoOpcao;
 import lombok.Data;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,8 @@ public class UsuarioResponseDTO {
         private String senha;
         private String emailLogin;
         private String telefone;
+
+        @CPF(message = "CPF inválido")
         private String cpf;
         private String endereco;
         private RoleEnum roleEnum;

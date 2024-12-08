@@ -32,9 +32,10 @@ public class PostagemService {
         return postagemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Postagem não encontrada."));
     }
+    public void deletePostagemById(Integer imagemId) {
+        Postagem postagem = postagemRepository.findById(imagemId)
+                .orElseThrow(() -> new RuntimeException("Postagem não encontrada com o ID: " + imagemId));
 
-    public void deletePostagemById(Integer id) {
-        Postagem postagem = getPostagemById(id);
         postagemRepository.delete(postagem);
     }
 

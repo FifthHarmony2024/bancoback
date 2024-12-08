@@ -63,13 +63,13 @@ public class PostagemController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarPostagem(@PathVariable Integer id) {
+    @DeleteMapping("deletar/{id}")
+    public ResponseEntity<String> deletarPostagem(@PathVariable("id") Integer id) {
         try {
             postagemService.deletePostagemById(id);
             return ResponseEntity.ok("Postagem deletada com sucesso.");
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao deletar postagem: " + e.getMessage());
         }
     }
 

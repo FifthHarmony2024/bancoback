@@ -15,25 +15,20 @@ import java.util.UUID;
 @Slf4j
 public class FileStorageService {
 
-    @Value("${file.upload-dir}") // Injetar a propriedade configurada
+    @Value("${file.upload-dir}")
     private String uploadDir;
 
     public String saveFile(MultipartFile file) throws IOException {
-        // Gera um nome único para o arquivo
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-        // Define o caminho completo
         Path filePath = Paths.get(uploadDir, fileName);
 
-        // Cria o diretório, se necessário
         Files.createDirectories(filePath.getParent());
 
-        // Salva o arquivo
         Files.write(filePath, file.getBytes());
 
         log.info("Arquivo salvo em: {}", filePath.toString());
 
-        // Retorna o caminho salvo
         return filePath.toString();
     }
 }

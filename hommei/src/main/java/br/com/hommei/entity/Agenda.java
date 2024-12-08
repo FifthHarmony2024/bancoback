@@ -26,6 +26,7 @@ public class Agenda {
     private Time hrIndisponivel;
 
     @Column(name = "DIA_SERV")
+    @Temporal(TemporalType.DATE)
     private Date diaServico;
 
     @ManyToOne

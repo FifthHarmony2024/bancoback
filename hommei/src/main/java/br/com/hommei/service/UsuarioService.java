@@ -56,6 +56,7 @@ public class UsuarioService {
     public ResponseEntity<UsuarioResponseDTO> cadastrarCliente(UsuarioInsercaoDTO usuarioDTO) {
         log.info("Dados do usuário recebidos: {}", usuarioDTO);
 
+        validarDadosComuns(usuarioDTO);
         Usuario usuario = modelMapper.map(usuarioDTO, Usuario.class);
         log.info("Dados do usuário após mapeamento: {}", usuario);
 
@@ -73,8 +74,14 @@ public class UsuarioService {
         UsuarioResponseDTO usuarioResponse = modelMapper.map(clienteSalvo, UsuarioResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponse);
     }
+
+
+
     public ResponseEntity<PrestadorResponseDTO> cadastrarPrestador(PrestadorInsercaoDTO prestadorDTO) {
         log.info("Dados do prestador recebidos: {}", prestadorDTO);
+
+        validarDadosComuns(prestadorDTO);
+        validarDadosPrestador(prestadorDTO);
 
         Prestador prestador = modelMapper.map(prestadorDTO, Prestador.class);
         log.info("Dados do prestador após mapeamento: {}", prestador);
@@ -236,16 +243,13 @@ public class UsuarioService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum prestador encontrado com o termo informado.");
         }
 
-        // Mapear os prestadores para DTOs e incluir os nomes dos serviços e da categoria.
         List<PrestadorResponseDTO> prestadoresDTO = prestadores.stream().map(prestador -> {
             PrestadorResponseDTO prestadorDTO = modelMapper.map(prestador, PrestadorResponseDTO.class);
 
-            // Adicionando o nome da categoria
             if (prestador.getCategoria() != null) {
                 prestadorDTO.setNomeCategoria(prestador.getCategoria().getNomeCategoria());
             }
 
-            // Adicionando os nomes dos serviços
             if (prestador.getServico() != null && !prestador.getServico().isEmpty()) {
                 List<String> nomesServicos = prestador.getServico().stream()
                         .map(Servico::getNomeServico)
@@ -304,6 +308,68 @@ public class UsuarioService {
 
         return ResponseEntity.ok(fotoPerfil);
     }
+
+    public void validarDadosComuns(UsuarioInsercaoDTO usuarioDTO) {
+        if (usuarioDTO.getNome() == null || usuarioDTO.getNome().trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome é obrigatório.");
+        }
+        if (usuarioDTO.getSobrenome() == null || usuarioDTO.getSobrenome().trim().isEmpty()) {
+            throw new IllegalArgumentException("O sobrenome é obrigatório.");
+        }
+        if (usuarioDTO.getEmailLogin() == null || usuarioDTO.getEmailLogin().trim().isEmpty()) {
+            throw new IllegalArgumentException("O email é obrigatório.");
+        }
+        if (!usuarioDTO.getEmailLogin().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            throw new IllegalArgumentException("O email informado não é válido.");
+        }
+        if (usuarioDTO.getSenha() == null || usuarioDTO.getSenha().trim().isEmpty()) {
+            throw new IllegalArgumentException("A senha é obrigatória.");
+        }
+        if (usuarioDTO.getConfSenha() == null || usuarioDTO.getConfSenha().trim().isEmpty()) {
+            throw new IllegalArgumentException("A confirmação de senha é obrigatória.");
+        }
+        if (!usuarioDTO.getSenha().equals(usuarioDTO.getConfSenha())) {
+            throw new IllegalArgumentException("A senha e a confirmação de senha devem ser iguais.");
+        }
+        if (usuarioDTO.getTelefone() == null || usuarioDTO.getTelefone().trim().isEmpty()) {
+            throw new IllegalArgumentException("O telefone é obrigatório.");
+        }
+        String telefoneApenasNumeros = usuarioDTO.getTelefone().replaceAll("[^0-9]", "");
+
+        if (!telefoneApenasNumeros.matches("^[0-9]{10,15}$")) {
+            throw new IllegalArgumentException("O telefone deve conter apenas números e deve ter entre 10 e 15 dígitos.");
+        }
+    }
+
+
+    public void validarDadosPrestador(PrestadorInsercaoDTO prestadorDTO) {
+        if (prestadorDTO.getNomeComercial() == null || prestadorDTO.getNomeComercial().trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome comercial é obrigatório.");
+        }
+
+        if (prestadorDTO.getTipoPrestador() == null) {
+            throw new IllegalArgumentException("O tipo de prestador é obrigatório.");
+        }
+
+        if (prestadorDTO.getTipoPrestador() == TipoPrestador.AUTONOMO) {
+            if (prestadorDTO.getCpf() == null || prestadorDTO.getCpf().trim().isEmpty()) {
+                throw new IllegalArgumentException("CPF é obrigatório para autônomos.");
+            }
+        } else if (prestadorDTO.getTipoPrestador() == TipoPrestador.MICROEMPREENDEDOR) {
+            if (prestadorDTO.getCnpj() == null || prestadorDTO.getCnpj().trim().isEmpty()) {
+                throw new IllegalArgumentException("CNPJ é obrigatório para microempreendedores.");
+            }
+        }
+
+        if (prestadorDTO.getIdCategoria() == null) {
+            throw new IllegalArgumentException("ID da categoria é obrigatório.");
+        }
+
+        if (prestadorDTO.getIdServico() == null || prestadorDTO.getIdServico().isEmpty()) {
+            throw new IllegalArgumentException("Pelo menos um serviço deve ser informado.");
+        }
+    }
+
 
 
 }

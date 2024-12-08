@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -47,6 +48,7 @@ public class Usuario {
     private String telefone;
 
     @CPF
+    @NotBlank
     @Column(name = "CPF")
     private String cpf;
 
@@ -88,4 +90,12 @@ public class Usuario {
     @Column(name = "FOTO_PERFIL")
     private String fotoPerfil;
 
+    @Column(name = "CODIGO_CONFIRMACAO")
+    private String codigoConfirmacao;
+
+    @Column(name = "DATA_EXPIRACAO_CODIGO")
+    private LocalDateTime dataExpiracaoCodigo;
+
+    public Usuario(Integer idUsuario) {
+    }
 }
