@@ -1,13 +1,14 @@
 package br.com.hommei.entity;
 
 
-import br.com.hommei.enuns.SexoOpcao;
 import br.com.hommei.enuns.TipoDia;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,13 +30,15 @@ public class Agenda {
     @Temporal(TemporalType.DATE)
     private Date diaServico;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "ID_USUARIO")
-    private Usuario usuario;
+    private Prestador prestador;
 
     @Column(name = "TIPO_DIA")
     @Enumerated(EnumType.STRING)
     private TipoDia tipoDia;
 
+    @OneToMany(mappedBy = "agenda", cascade = CascadeType.ALL)
+    private List<Agendamento> agendamentos;
 
 }

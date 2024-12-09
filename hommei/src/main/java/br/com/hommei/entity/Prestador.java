@@ -45,4 +45,5 @@ public class Prestador extends Usuario {
                 ", categoriaId=" + (categoria != null ? categoria.getIdCategoria() : null) +
                 '}';
     }
+
 }

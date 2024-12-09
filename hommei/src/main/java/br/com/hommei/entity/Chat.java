@@ -23,6 +23,7 @@ public class Chat {
 
     @Column(name = "ANEXO_URL")
     private String anexoUrl;
+
     @ManyToOne
     @JoinColumn(name = "ID_USUARIO_REMETENTE", referencedColumnName = "ID_USUARIO", nullable = false)
     private Usuario usuarioRemetente;

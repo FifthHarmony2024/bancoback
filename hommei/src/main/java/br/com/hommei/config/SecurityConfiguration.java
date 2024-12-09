@@ -64,7 +64,8 @@ public class SecurityConfiguration {
                    request.requestMatchers("/postagens/**").permitAll();
                    request.requestMatchers("/uploads/**").permitAll();
                    request.requestMatchers("/chat/**").permitAll();
-               request.requestMatchers("/agenda/**").permitAll();
+               request.requestMatchers("/agendas/**").permitAll();
+               request.requestMatchers("/agendamentos/**").permitAll();
 
                request.anyRequest().authenticated();
                })

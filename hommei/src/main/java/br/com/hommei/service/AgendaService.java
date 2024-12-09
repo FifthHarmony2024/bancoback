@@ -1,15 +1,17 @@
 package br.com.hommei.service;
 
-import br.com.hommei.dto.MarcacaoFolgaDTO;
 import br.com.hommei.entity.Agenda;
+import br.com.hommei.entity.Agendamento;
+import br.com.hommei.entity.Prestador;
 import br.com.hommei.entity.Usuario;
-import br.com.hommei.enuns.TipoDia;
 import br.com.hommei.repository.AgendaRepository;
+import br.com.hommei.repository.AgendamentoRepository;
+import br.com.hommei.repository.PrestadorRepository;
+import br.com.hommei.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class AgendaService {
@@ -17,37 +19,55 @@ public class AgendaService {
     @Autowired
     private AgendaRepository agendaRepository;
 
-    public void marcarFolga(MarcacaoFolgaDTO marcacaoFolgaDTO) {
-        // Converte a data para java.sql.Date
-        Date diaServicoSql = new Date(marcacaoFolgaDTO.getDiaServico().getTime());
+    @Autowired
+    private PrestadorRepository prestadorRepository;
 
-        // Verifica se a agenda já existe para o usuário e a data especificada
-        Optional<Agenda> agendaOptional = agendaRepository.findByUsuarioIdUsuarioAndDiaServico(
-                marcacaoFolgaDTO.getIdUsuario(),
-                diaServicoSql
-        );
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
 
-        if (agendaOptional.isPresent()) {
-            // Se a agenda já existir, apenas atualiza o tipo de dia para FOLGA
-            Agenda agenda = agendaOptional.get();
-            agenda.setTipoDia(TipoDia.FOLGA);  // Marca como folga
-            agendaRepository.save(agenda);
-        } else {
-            // Se a agenda não existir, cria uma nova entrada com tipo de dia FOLGA
-            Agenda novaAgenda = new Agenda();
-            novaAgenda.setDiaServico(diaServicoSql);
-            novaAgenda.setTipoDia(TipoDia.FOLGA);  // Marca como folga
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-            // Define o usuário com o ID fornecido
-            Usuario usuario = new Usuario();
-            usuario.setIdUsuario(marcacaoFolgaDTO.getIdUsuario());
-            novaAgenda.setUsuario(usuario);
+    public Agenda salvarAgenda(Agenda agenda) {
 
-            // Não atribui valores para HR_DISPONIVEL e HR_INDISPONIVEL
-            novaAgenda.setHrDisponivel(null); // Não atribui horário disponível
-            novaAgenda.setHrIndisponivel(null); // Não atribui horário indisponível
+        Prestador prestador = prestadorRepository.findById(agenda.getPrestador().getIdUsuario())
+                .orElseThrow(() -> new IllegalArgumentException("Prestador não encontrado"));
 
-            agendaRepository.save(novaAgenda);  // Salva a nova agenda
-        }
+        agendaRepository.findByPrestador(prestador).ifPresent(a -> agenda.setIdAgenda(a.getIdAgenda()));
+
+        agenda.setPrestador(prestador);
+        return agendaRepository.save(agenda);
     }
+
+
+    public Agenda buscarAgendaPorPrestador(Integer idUsuario) {
+        Prestador prestador = prestadorRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Prestador não encontrado"));
+        return agendaRepository.findByPrestador(prestador)
+                .orElseThrow(() -> new IllegalArgumentException("Agenda não encontrada"));
+    }
+
+
+    public Agendamento criarAgendamento(Agendamento agendamento) {
+        Agenda agenda = agendaRepository.findById(agendamento.getAgenda().getIdAgenda())
+                .orElseThrow(() -> new IllegalArgumentException("Agenda não encontrada"));
+
+        Usuario usuario = usuarioRepository.findById(agendamento.getUsuario().getIdUsuario())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+
+        agendamento.setAgenda(agenda);
+        agendamento.setUsuario(usuario);
+
+        return agendamentoRepository.save(agendamento);
+    }
+    public boolean deletarAgenda(Integer idAgenda) {
+        if (agendaRepository.existsById(idAgenda)) {
+            agendaRepository.deleteById(idAgenda);
+            return true;
+        }
+        return false;
+    }
+
+
 }

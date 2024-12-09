@@ -1,5 +1,6 @@
 package br.com.hommei.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,5 +27,27 @@ public class Agendamento {
     @Column(name = "VL_ORC")
     private BigDecimal valorOrcamento;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_USUARIO", nullable = false)
+    private Usuario usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_AGENDA", nullable = false)
+    @JsonBackReference
+    private Agenda agenda;
+
+    @Column(name = "ENDERECO")
+    private String endereco;
+
+    @Column(name = "CIDADE")
+    private String cidade;
+
+    @Column(name = "BAIRRO")
+    private String bairro;
+
+    @Column(name = "NUM_RESIDENCIAL")
+    private Integer numResidencial;
+
+    @Column(name = "NOME_CLIENTE")
+    private String nomeCliente;
 }

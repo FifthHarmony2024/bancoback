@@ -2,7 +2,6 @@ package br.com.hommei.entity;
 
 import br.com.hommei.enuns.RoleEnum;
 import br.com.hommei.enuns.SexoOpcao;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -95,6 +94,7 @@ public class Usuario {
 
     @Column(name = "DATA_EXPIRACAO_CODIGO")
     private LocalDateTime dataExpiracaoCodigo;
+
 
     public Usuario(Integer idUsuario) {
     }
