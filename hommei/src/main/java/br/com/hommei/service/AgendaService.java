@@ -1,18 +1,15 @@
 package br.com.hommei.service;
 
 import br.com.hommei.entity.Agenda;
-import br.com.hommei.entity.Agendamento;
-import br.com.hommei.entity.Prestador;
 import br.com.hommei.entity.Usuario;
+import br.com.hommei.enuns.TipoDia;
 import br.com.hommei.repository.AgendaRepository;
-import br.com.hommei.repository.AgendamentoRepository;
 import br.com.hommei.repository.PrestadorRepository;
 import br.com.hommei.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+import java.util.Optional;
 @Service
 public class AgendaService {
 
@@ -20,54 +17,93 @@ public class AgendaService {
     private AgendaRepository agendaRepository;
 
     @Autowired
-    private PrestadorRepository prestadorRepository;
-
-    @Autowired
-    private AgendamentoRepository agendamentoRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository; // Repositório de Usuario
 
     public Agenda salvarAgenda(Agenda agenda) {
+        // Garantir que o usuário está associado à agenda antes de salvar
+        if (agenda.getUsuario() == null) {
+            throw new RuntimeException("Usuário não associado à agenda.");
+        }
 
-        Prestador prestador = prestadorRepository.findById(agenda.getPrestador().getIdUsuario())
-                .orElseThrow(() -> new IllegalArgumentException("Prestador não encontrado"));
+        // Aqui, acessamos o Usuario associado à agenda
+        Usuario usuario = agenda.getUsuario(); // Acesso direto à entidade Usuario
 
-        agendaRepository.findByPrestador(prestador).ifPresent(a -> agenda.setIdAgenda(a.getIdAgenda()));
+        // Faça algo com o Usuario se necessário, por exemplo, validando ou ajustando dados
 
-        agenda.setPrestador(prestador);
         return agendaRepository.save(agenda);
     }
 
-
-    public Agenda buscarAgendaPorPrestador(Integer idUsuario) {
-        Prestador prestador = prestadorRepository.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Prestador não encontrado"));
-        return agendaRepository.findByPrestador(prestador)
-                .orElseThrow(() -> new IllegalArgumentException("Agenda não encontrada"));
+    // Buscar agenda por ID
+    public Optional<Agenda> buscarPorId(Integer idAgenda) {
+        return agendaRepository.findById(idAgenda);
     }
 
+    public Agenda marcarFolga(Integer idUsuario) {
+        Agenda agenda = buscarOuCriarAgenda(idUsuario);
 
-    public Agendamento criarAgendamento(Agendamento agendamento) {
-        Agenda agenda = agendaRepository.findById(agendamento.getAgenda().getIdAgenda())
-                .orElseThrow(() -> new IllegalArgumentException("Agenda não encontrada"));
+        // Marcar como folga
+        agenda.setTipoDia(TipoDia.FOLGA);
 
-        Usuario usuario = usuarioRepository.findById(agendamento.getUsuario().getIdUsuario())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+        // Definir os outros campos como null para garantir que eles não carreguem dados antigos
+        agenda.setValorOrcamento(null);
+        agenda.setEndereco(null);
+        agenda.setCidade(null);
+        agenda.setBairro(null);
+        agenda.setNumResidencial(null);
+        agenda.setNomeCliente(null);
+        agenda.setHrAgendamento(null);
 
-
-        agendamento.setAgenda(agenda);
-        agendamento.setUsuario(usuario);
-
-        return agendamentoRepository.save(agendamento);
+        return agendaRepository.save(agenda);
     }
-    public boolean deletarAgenda(Integer idAgenda) {
-        if (agendaRepository.existsById(idAgenda)) {
-            agendaRepository.deleteById(idAgenda);
-            return true;
+
+    public Agenda marcarTrabalho(Agenda agenda) {
+        // Buscar ou criar a agenda do usuário
+        Agenda agendaExistente = buscarOuCriarAgenda(agenda.getUsuario().getIdUsuario());
+
+        // Verifica se o usuário está associado corretamente
+        if (agendaExistente.getUsuario() == null) {
+            throw new RuntimeException("Usuário não associado à agenda.");
         }
-        return false;
+
+        // Atualizar os campos da agenda com os dados enviados na requisição
+        agendaExistente.setTipoDia(TipoDia.TRABALHO);
+        agendaExistente.setValorOrcamento(agenda.getValorOrcamento());
+        agendaExistente.setEndereco(agenda.getEndereco());
+        agendaExistente.setCidade(agenda.getCidade());
+        agendaExistente.setBairro(agenda.getBairro());
+        agendaExistente.setNumResidencial(agenda.getNumResidencial());
+        agendaExistente.setNomeCliente(agenda.getNomeCliente());
+        agendaExistente.setHrAgendamento(agenda.getHrAgendamento());
+        agendaExistente.setDtAgendamento(agenda.getDtAgendamento());
+
+        // Salvar as alterações na agenda
+        return agendaRepository.save(agendaExistente);
     }
 
+    private Agenda buscarOuCriarAgenda(Integer idUsuario) {
+        // Verifica se já existe uma agenda para o usuário
+        Optional<Agenda> agendaOptional = agendaRepository.findByUsuario_IdUsuario(idUsuario);
 
+        if (agendaOptional.isPresent()) {
+            return agendaOptional.get();
+        }
+
+        // Caso não tenha uma agenda, cria uma nova
+        Agenda novaAgenda = new Agenda();
+
+        // Buscar o usuário pelo idUsuario
+        var usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Atribuindo o usuário à nova agenda
+        novaAgenda.setUsuario(usuario);
+
+        // Se o usuário não estiver sendo associado corretamente, pode haver um problema
+        if (novaAgenda.getUsuario() == null) {
+            throw new RuntimeException("Usuário não foi atribuído corretamente à agenda.");
+        }
+
+        // Salvar a nova agenda
+        return agendaRepository.save(novaAgenda);
+    }
 }

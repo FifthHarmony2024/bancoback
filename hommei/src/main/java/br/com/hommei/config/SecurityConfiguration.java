@@ -65,7 +65,6 @@ public class SecurityConfiguration {
                    request.requestMatchers("/uploads/**").permitAll();
                    request.requestMatchers("/chat/**").permitAll();
                request.requestMatchers("/agendas/**").permitAll();
-               request.requestMatchers("/agendamentos/**").permitAll();
 
                request.anyRequest().authenticated();
                })

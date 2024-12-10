@@ -1,16 +1,13 @@
 package br.com.hommei.controller;
 
 import br.com.hommei.entity.Agenda;
-import br.com.hommei.entity.Agendamento;
 import br.com.hommei.service.AgendaService;
-import br.com.hommei.service.AgendamentoService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/agendas")
@@ -20,56 +17,47 @@ public class AgendaController {
     @Autowired
     private AgendaService agendaService;
 
-    @Autowired
-    private AgendamentoService agendamentoService;
-
+    // Endpoint para salvar uma agenda
     @PostMapping("/salvar")
     public ResponseEntity<Agenda> salvarAgenda(@RequestBody Agenda agenda) {
         try {
             Agenda agendaSalva = agendaService.salvarAgenda(agenda);
-            return ResponseEntity.ok(agendaSalva);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            return new ResponseEntity<>(agendaSalva, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/agendamentos/{idUsuario}")
-    public ResponseEntity<List<Agendamento>> listarAgendamentosPorPrestador(@PathVariable Integer idUsuario) {
-        try {
-            List<Agendamento> agendamentos = agendamentoService.listarAgendamentosPorPrestador(idUsuario);
-            return ResponseEntity.ok(agendamentos);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/agendar")
-    public ResponseEntity<Agendamento> agendar(@RequestBody Agendamento agendamento) {
-        try {
-            Agendamento agendamentoCriado = agendaService.criarAgendamento(agendamento);
-            return ResponseEntity.status(HttpStatus.CREATED).body(agendamentoCriado);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-    }
-
-    @GetMapping("/prestador/{idUsuario}")
-    public ResponseEntity<Agenda> buscarAgendaPorPrestador(@PathVariable Integer idUsuario) {
-        try {
-            Agenda agenda = agendaService.buscarAgendaPorPrestador(idUsuario);
-            return ResponseEntity.ok(agenda);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/deletar/{idAgenda}")
-    public ResponseEntity<String> deletarAgenda(@PathVariable Integer idAgenda) {
-        boolean agendaDeletada = agendaService.deletarAgenda(idAgenda);
-        if (agendaDeletada) {
-            return ResponseEntity.ok("Agenda deletada com sucesso.");
+    // Endpoint para buscar uma agenda por ID
+    @GetMapping("/{idAgenda}")
+    public ResponseEntity<Agenda> buscarAgenda(@PathVariable Integer idAgenda) {
+        Optional<Agenda> agendaOptional = agendaService.buscarPorId(idAgenda);
+        if (agendaOptional.isPresent()) {
+            return new ResponseEntity<>(agendaOptional.get(), HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Endpoint para marcar uma folga
+    @PutMapping("/folga/{idUsuario}")
+    public ResponseEntity<Agenda> marcarFolga(@PathVariable Integer idUsuario) {
+        try {
+            Agenda agenda = agendaService.marcarFolga(idUsuario);
+            return new ResponseEntity<>(agenda, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Endpoint para marcar um dia de trabalho
+    @PutMapping("/trabalho")
+    public ResponseEntity<Agenda> marcarTrabalho(@RequestBody Agenda agenda) {
+        try {
+            Agenda agendaAtualizada = agendaService.marcarTrabalho(agenda);
+            return new ResponseEntity<>(agendaAtualizada, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }

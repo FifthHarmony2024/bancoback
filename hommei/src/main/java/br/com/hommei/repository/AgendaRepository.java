@@ -12,9 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
-    Optional<Agenda> findByPrestadorAndDiaServico(Prestador prestador, Date diaServico);
+    Optional<Agenda> findByUsuario_IdUsuario(Integer idUsuario);
 
-    Optional<Agenda> findByPrestador(Prestador prestador);
 
-    void deleteById(Integer id);
 }

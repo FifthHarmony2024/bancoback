@@ -32,6 +32,6 @@ public class Pedido {
     private Usuario id;
 
     @ManyToOne
-    @JoinColumn(name = "ID_AGENDAMENTO")
-    private Agendamento idAgen;
+    @JoinColumn(name = "ID_AGENDA")
+    private Agenda idAgenda;
 }

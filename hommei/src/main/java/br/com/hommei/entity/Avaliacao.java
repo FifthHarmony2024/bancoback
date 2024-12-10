@@ -1,10 +1,13 @@
 package br.com.hommei.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Entity
@@ -32,6 +35,5 @@ public class Avaliacao {
     @ManyToOne
     @JoinColumn(name = "ID_USUARIO")
     private Usuario id;
-
 
 }

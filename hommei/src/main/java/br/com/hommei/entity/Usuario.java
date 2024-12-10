@@ -89,13 +89,6 @@ public class Usuario {
     @Column(name = "FOTO_PERFIL")
     private String fotoPerfil;
 
-    @Column(name = "CODIGO_CONFIRMACAO")
-    private String codigoConfirmacao;
-
-    @Column(name = "DATA_EXPIRACAO_CODIGO")
-    private LocalDateTime dataExpiracaoCodigo;
-
-
     public Usuario(Integer idUsuario) {
     }
 }
